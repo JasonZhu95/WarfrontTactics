@@ -1,14 +1,25 @@
 using UnityEngine;
 using System.Linq;
+using System.Collections.Generic;
 
 /* ----------------------------------------------------------------------------
  * Class: MapManager
- * Description: Handles the red selected cursor 
+ * Description: Script is responsible for managing the selected tile overlay.
+ * Also responsible for moving characters along the path based on click.
  * ---------------------------------------------------------------------------- */
 public class MouseController : MonoBehaviour
 {
+    public float speed = 3;
+
     [SerializeField] private GameObject characterPrefab;
     private CharacterData character;
+    private PathFinder pathFinder;
+    private List<OverlayTile> path = new List<OverlayTile>();
+
+    private void Start()
+    {
+        pathFinder = new PathFinder();
+    }
 
     private void LateUpdate()
     {
@@ -31,13 +42,42 @@ public class MouseController : MonoBehaviour
                     character = Instantiate(characterPrefab).GetComponent<CharacterData>();
                     PositionCharacterOnTile(overlayTile);
                 }
+                else
+                {
+                    path = pathFinder.FindPath(character.activeTile, overlayTile);
+                }
             }
+        }
+
+        if (path.Count > 0)
+        {
+            MoveAlongPath();
+        }
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: MoveAlongPath
+    * Description: Moves the character's position through the path using
+    * Unity's built in MoveTowards.
+    * ---------------------------------------------------------------------- */
+    private void MoveAlongPath()
+    {
+        float step = speed * Time.deltaTime;
+
+        float zIndex = path[0].transform.position.z;
+        character.transform.position = Vector2.MoveTowards(character.transform.position, path[0].transform.position, step);
+        character.transform.position = new Vector3(character.transform.position.x, character.transform.position.y, zIndex);
+
+        if (Vector2.Distance(character.transform.position, path[0].transform.position) < 0.0001f)
+        {
+            PositionCharacterOnTile(path[0]);
+            path.RemoveAt(0);
         }
 
     }
 
     /* ------------------------------------------------------------------------
-    * Function: GetFocusedOnTile()
+    * Function: GetFocusedOnTile
     * Description: Return the overlay tile hit by raycast.
     * ---------------------------------------------------------------------- */
     public RaycastHit2D? GetFocusedOnTile()
@@ -57,7 +97,7 @@ public class MouseController : MonoBehaviour
     }
 
     /* ------------------------------------------------------------------------
-    * Function: PositionCharacterOnTile(OverlayTile tile)
+    * Function: PositionCharacterOnTile
     * Description: Move the character object to the tile position that is fed
     * as a parameter. 0.0001f is used to differentiate the sorting layer
     * between the character and the tiles that are in front.

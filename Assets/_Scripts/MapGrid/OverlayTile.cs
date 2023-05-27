@@ -2,10 +2,21 @@ using UnityEngine;
 
 /* ----------------------------------------------------------------------------
  * Class: OverlayTile
- * Description: Manages the selected tile gameobject.
+ * Description: Manages the data for each individual Tile in the map or grid.
  * ---------------------------------------------------------------------------- */
 public class OverlayTile : MonoBehaviour
 {
+    /* A* Pathfinding Variables
+     * G = Distance from Starting Node
+     * H = Distance from End Node
+     * F = G + H */
+    public int G { get; set; }
+    public int H { get; set; }
+    public int F { get => G + H; }
+
+    public bool IsBlocked { get; set; }
+    public Vector3Int gridLocation { get; set; }
+    public OverlayTile previousTile { get; set; }
 
     private void Start()
     {
@@ -21,7 +32,7 @@ public class OverlayTile : MonoBehaviour
     }
 
     /* ------------------------------------------------------------------------
-     * Function: ShowTile()
+     * Function: ShowTile
      * Description: Changes the alpha of the sprite to 1 making it visible.
      * --------------------------------------------------------------------- */
     public void ShowTile()
@@ -30,7 +41,7 @@ public class OverlayTile : MonoBehaviour
     }
 
     /* ------------------------------------------------------------------------
-    * Function: HideTile()
+    * Function: HideTile
     * Description: Changes the alpha of the sprite to 0 making it invisible.
     * --------------------------------------------------------------------- */
     public void HideTile()

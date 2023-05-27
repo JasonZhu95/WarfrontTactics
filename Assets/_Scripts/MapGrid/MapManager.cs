@@ -54,6 +54,7 @@ public class MapManager : MonoBehaviour
                         // Set overlay tile 1 higher on the z-axis sorting layer to appear above other tiles
                         overlayTile.transform.position = new Vector3(cellWorldPosition.x, cellWorldPosition.y, cellWorldPosition.z + 1);
                         overlayTile.GetComponent<SpriteRenderer>().sortingOrder = tileMap.GetComponent<TilemapRenderer>().sortingOrder;
+                        overlayTile.gridLocation = tileLocation;
                         map.Add(tileKey, overlayTile);
                     }
                 }
