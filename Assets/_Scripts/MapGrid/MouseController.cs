@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using static ArrowTranslator;
 
 /* ----------------------------------------------------------------------------
  * Class: MapManager
@@ -9,29 +10,59 @@ using System.Collections.Generic;
  * ---------------------------------------------------------------------------- */
 public class MouseController : MonoBehaviour
 {
-    public float speed = 3;
-
+    [SerializeField] private GameObject cursor;
+    [SerializeField] private float speed = 3;
     [SerializeField] private GameObject characterPrefab;
     private CharacterData character;
+
     private PathFinder pathFinder;
-    private List<OverlayTile> path = new List<OverlayTile>();
+    private RangeFinder rangeFinder;
+    private ArrowTranslator arrowTranslator;
+    private List<OverlayTile> path;
+    private List<OverlayTile> rangeFinderTiles;
+    private bool isMoving;
 
     private void Start()
     {
         pathFinder = new PathFinder();
+        rangeFinder = new RangeFinder();
+        arrowTranslator = new ArrowTranslator();
+
+        path = new List<OverlayTile>();
+        isMoving = false;
+        rangeFinderTiles = new List<OverlayTile>();
     }
 
     private void LateUpdate()
     {
-        var focusedTileHit = GetFocusedOnTile();
+        RaycastHit2D? focusedTileHit = GetFocusedOnTile();
 
         // Move the mouse cursor where the overlay tile is selected.
         // Show the overlay tile on mouse press
         if (focusedTileHit.HasValue)
         {
             OverlayTile overlayTile = focusedTileHit.Value.collider.gameObject.GetComponent<OverlayTile>();
-            transform.position = overlayTile.transform.position;
-            gameObject.GetComponent<SpriteRenderer>().sortingOrder = overlayTile.GetComponent<SpriteRenderer>().sortingOrder;
+            cursor.transform.position = overlayTile.transform.position;
+            cursor.gameObject.GetComponent<SpriteRenderer>().sortingOrder = overlayTile.GetComponent<SpriteRenderer>().sortingOrder;
+
+            if(rangeFinderTiles.Contains(overlayTile) && !isMoving)
+            {
+                path = pathFinder.FindPath(character.activeTile, overlayTile, rangeFinderTiles);
+
+                foreach(OverlayTile tile in rangeFinderTiles)
+                {
+                    MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
+                }
+
+                for (int i = 0; i < path.Count; i++)
+                {
+                    var previousTile = i > 0 ? path[i - 1] : character.activeTile;
+                    var futureTile = i < path.Count - 1 ? path[i + 1] : null;
+
+                    var arrowDir = arrowTranslator.TranslateDirection(previousTile, path[i], futureTile);
+                    path[i].SetArrowSprite(arrowDir);
+                }
+            }
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -41,17 +72,24 @@ public class MouseController : MonoBehaviour
                 {
                     character = Instantiate(characterPrefab).GetComponent<CharacterData>();
                     PositionCharacterOnTile(overlayTile);
+                    GetInRangeTiles();
                 }
                 else
                 {
-                    path = pathFinder.FindPath(character.activeTile, overlayTile);
+                    isMoving = true;
+                    overlayTile.gameObject.GetComponent<OverlayTile>().HideTile();
                 }
             }
         }
 
-        if (path.Count > 0)
+        if (path.Count > 0 && isMoving)
         {
             MoveAlongPath();
+        }
+        if (path.Count == 0 && character != null)
+        {
+            GetInRangeTiles();
+            isMoving = false;
         }
     }
 
@@ -68,12 +106,16 @@ public class MouseController : MonoBehaviour
         character.transform.position = Vector2.MoveTowards(character.transform.position, path[0].transform.position, step);
         character.transform.position = new Vector3(character.transform.position.x, character.transform.position.y, zIndex);
 
+        foreach (OverlayTile tile in rangeFinderTiles)
+        {
+            MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
+        }
+
         if (Vector2.Distance(character.transform.position, path[0].transform.position) < 0.0001f)
         {
             PositionCharacterOnTile(path[0]);
             path.RemoveAt(0);
         }
-
     }
 
     /* ------------------------------------------------------------------------
@@ -105,7 +147,21 @@ public class MouseController : MonoBehaviour
     private void PositionCharacterOnTile(OverlayTile tile)
     {
         character.transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
-        character.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
+        character.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
         character.activeTile = tile;
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: GetInRangeTiles
+    * Description: Displays tiles that are only in range of the selected
+    * character
+    * ---------------------------------------------------------------------- */
+    private void GetInRangeTiles()
+    {
+        rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), 3);
+        foreach (var item in rangeFinderTiles)
+        {
+            item.ShowTile();
+        }
     }
 }

@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static ArrowTranslator;
 
 /* ----------------------------------------------------------------------------
  * Class: MapManager
@@ -11,10 +14,12 @@ public class MapManager : MonoBehaviour
 {
     private static MapManager instance;
     public static MapManager Instance { get { return instance; } }
-    [SerializeField] private OverlayTile overlayTilePrefab;
+
+    [SerializeField] private GameObject overlayTilePrefab;
     [SerializeField] private GameObject overlayContainer;
 
     public Dictionary<Vector2Int, OverlayTile> map;
+    public bool ignoreBottomTiles;
 
     private void Awake()
     {
@@ -30,35 +35,85 @@ public class MapManager : MonoBehaviour
 
     private void Start()
     {
-        Tilemap tileMap = gameObject.GetComponentInChildren<Tilemap>();
+        IOrderedEnumerable<Tilemap> tileMaps = gameObject.GetComponentsInChildren<Tilemap>().OrderByDescending(x => x.GetComponent<TilemapRenderer>().sortingOrder);
         map = new Dictionary<Vector2Int, OverlayTile>();
 
-        BoundsInt bounds = tileMap.cellBounds;
-        // Loop through all tiles in the tilemap grid
-        for(int z = bounds.max.z; z >= bounds.min.z; z--)
+        foreach (var tm in tileMaps)
         {
-            for (int y = bounds.min.y; y < bounds.max.y; y++)
+            BoundsInt bounds = tm.cellBounds;
+
+            // Loop through all tiles in the tilemap grid
+            for(int z = bounds.max.z; z >= bounds.min.z; z--)
             {
-                for (int x = bounds.min.x; x < bounds.max.x; x++)
+                for (int y = bounds.min.y; y < bounds.max.y; y++)
                 {
-                    Vector3Int tileLocation = new Vector3Int(x, y, z);
-                    Vector2Int tileKey = new Vector2Int(x, y);
-
-                    // Generates an overlay tile for each tile location in grid.
-                    if (tileMap.HasTile(tileLocation) && !map.ContainsKey(tileKey))
+                    for (int x = bounds.min.x; x < bounds.max.x; x++)
                     {
-                        // Convert tile location coordinates to world space coordinates
-                        OverlayTile overlayTile = Instantiate(overlayTilePrefab, overlayContainer.transform);
-                        Vector3 cellWorldPosition = tileMap.GetCellCenterWorld(tileLocation);
+                        if (z == 0 && ignoreBottomTiles)
+                        {
+                            return;
+                        }
 
-                        // Set overlay tile 1 higher on the z-axis sorting layer to appear above other tiles
-                        overlayTile.transform.position = new Vector3(cellWorldPosition.x, cellWorldPosition.y, cellWorldPosition.z + 1);
-                        overlayTile.GetComponent<SpriteRenderer>().sortingOrder = tileMap.GetComponent<TilemapRenderer>().sortingOrder;
-                        overlayTile.gridLocation = tileLocation;
-                        map.Add(tileKey, overlayTile);
+                        if (tm.HasTile(new Vector3Int(x, y, z)))
+                        {
+                            if (!map.ContainsKey(new Vector2Int(x, y)))
+                            {
+                                GameObject overlayTile = Instantiate(overlayTilePrefab, overlayContainer.transform);
+                                Vector3 cellWorldPosition = tm.GetCellCenterWorld(new Vector3Int(x, y, z));
+                                overlayTile.transform.position = new Vector3(cellWorldPosition.x, cellWorldPosition.y, cellWorldPosition.z + 1);
+                                overlayTile.GetComponent<SpriteRenderer>().sortingOrder = tm.GetComponent<TilemapRenderer>().sortingOrder;
+                                overlayTile.gameObject.GetComponent<OverlayTile>().gridLocation = new Vector3Int(x, y, z);
+                                overlayTile.gameObject.GetComponent<OverlayTile>().SetArrowSprite(ArrowDirection.None);
+
+                                map.Add(new Vector2Int(x, y), overlayTile.gameObject.GetComponent<OverlayTile>());
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+    /* ------------------------------------------------------------------------
+    * Function: GetSurroundingTiles
+    * Description: Takes a Vector2Int Position of a tile and returns a list of
+    * surrounding tiles.
+    * ---------------------------------------------------------------------- */
+    public List<OverlayTile> GetSurroundingTiles(Vector2Int originTile)
+    {
+        var surroundingTiles = new List<OverlayTile>();
+
+        // Check Right Neighbour
+        Vector2Int TileToCheck = new Vector2Int(originTile.x + 1, originTile.y);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        // Check Left Neighbour
+        TileToCheck = new Vector2Int(originTile.x - 1, originTile.y);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        // Check Top Neighbour
+        TileToCheck = new Vector2Int(originTile.x, originTile.y + 1);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        // Check Bottom Neighbour
+        TileToCheck = new Vector2Int(originTile.x, originTile.y - 1);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        return surroundingTiles;
     }
 }

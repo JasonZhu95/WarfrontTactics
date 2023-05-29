@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using static ArrowTranslator;
 
 /* ----------------------------------------------------------------------------
  * Class: OverlayTile
@@ -14,14 +16,13 @@ public class OverlayTile : MonoBehaviour
     public int H { get; set; }
     public int F { get => G + H; }
 
-    public bool IsBlocked { get; set; }
-    public Vector3Int gridLocation { get; set; }
-    public OverlayTile previousTile { get; set; }
+    public bool isBlocked = false;
 
-    private void Start()
-    {
-        
-    }
+    public OverlayTile previousTile { get; set; }
+    public Vector3Int gridLocation { get; set; }
+    public Vector2Int grid2DLocation { get { return new Vector2Int(gridLocation.x, gridLocation.y); } }
+
+    public List<Sprite> arrows;
 
     private void Update()
     {
@@ -47,7 +48,26 @@ public class OverlayTile : MonoBehaviour
     public void HideTile()
     {
         gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+        SetArrowSprite(ArrowDirection.None);
     }
 
-
+    /* ------------------------------------------------------------------------
+    * Function: SetArrowSprite
+    * Description: Takes the direction of the arrow sprite and sets the alpha
+    * of the sprite to show from the enum ArrowDirection.
+    * --------------------------------------------------------------------- */
+    public void SetArrowSprite(ArrowDirection d)
+    {
+        SpriteRenderer arrow = GetComponentsInChildren<SpriteRenderer>()[1];
+        if (d == ArrowDirection.None)
+        {
+            arrow.color = new Color(1, 1, 1, 0);
+        }
+        else
+        {
+            arrow.color = new Color(1, 1, 1, 1);
+            arrow.sprite = arrows[(int)d];
+            arrow.sortingOrder = GetComponent<SpriteRenderer>().sortingOrder + 1;
+        }
+    }
 }

@@ -10,17 +10,34 @@ using System;
  * ------------------------------------------------------------------------- */
 public class PathFinder
 {
+    private Dictionary<Vector2Int, OverlayTile> searchableTiles;
+
     /* ------------------------------------------------------------------------
     * Function: FindPath
     * Description: Takes the Starting Node and Ending Node and Finds the 
     * shortest path using the A* algorithm
     * ---------------------------------------------------------------------- */
-    public List<OverlayTile> FindPath(OverlayTile start, OverlayTile end)
+    public List<OverlayTile> FindPath(OverlayTile start, OverlayTile end, List<OverlayTile> inRangeTiles)
     {
+        searchableTiles = new Dictionary<Vector2Int, OverlayTile>();
+
         List<OverlayTile> openList = new List<OverlayTile>();
-        List<OverlayTile> closedList = new List<OverlayTile>();
+        HashSet<OverlayTile> closedList = new HashSet<OverlayTile>();
+
+        if (inRangeTiles.Count > 0)
+        {
+            foreach (OverlayTile tile in inRangeTiles)
+            {
+                searchableTiles.Add(tile.grid2DLocation, MapManager.Instance.map[tile.grid2DLocation]);
+            }
+        }
+        else
+        {
+            searchableTiles = MapManager.Instance.map;
+        }
 
         openList.Add(start);
+
         while (openList.Count > 0)
         {
             // Get the Tile with the Lowest F Cost in the list
@@ -35,26 +52,24 @@ public class PathFinder
                 return GetFinishedList(start, end);
             }
 
-            List<OverlayTile> neighbourTiles = GetNeighbourTiles(currentOverlayTile);
-
-            foreach(var neighbour in neighbourTiles)
+            foreach(var tile in GetNeighbourOverlayTiles(currentOverlayTile))
             {
                 // Check if the neighbour is valid.
-                // The MathF check is looking to see if the tile is too high
-                if (neighbour.IsBlocked || closedList.Contains(neighbour) || Mathf.Abs(currentOverlayTile.gridLocation.z - neighbour.gridLocation.z) > 1)
+                if (tile.isBlocked || closedList.Contains(tile) || Mathf.Abs(currentOverlayTile.transform.position.z - tile.transform.position.z) > 1)
                 {
                     continue;
                 }
 
                 // Using Manhattan Distance to calculate shortest path
 
-                neighbour.G = GetManhattanDistance(start, neighbour);
-                neighbour.H = GetManhattanDistance(end, neighbour);
+                tile.G = GetManhattanDistance(start, tile);
+                tile.H = GetManhattanDistance(end, tile);
 
-                neighbour.previousTile = currentOverlayTile;
-                if (!openList.Contains(neighbour))
+                tile.previousTile = currentOverlayTile;
+
+                if (!openList.Contains(tile))
                 {
-                    openList.Add(neighbour);
+                    openList.Add(tile);
                 }
             }
         }
@@ -70,7 +85,6 @@ public class PathFinder
     private List<OverlayTile> GetFinishedList(OverlayTile start, OverlayTile end)
     {
         List<OverlayTile> finishedList = new List<OverlayTile>();
-
         OverlayTile currentTile = end;
 
         while (currentTile != start)
@@ -96,54 +110,57 @@ public class PathFinder
     }
 
     /* ------------------------------------------------------------------------
-    * Function: GetNeighbourTiles
-    * Description: Takes in a starting node. Returns a list of all neighbours
-    * of the starting node.
+    * Function: GetNeighbourOverlayTiles
+    * Description: Takes in the current tile and returns a list of neighbors.
     * ---------------------------------------------------------------------- */
-    private List<OverlayTile> GetNeighbourTiles(OverlayTile currentOverlayTile)
+    private List<OverlayTile> GetNeighbourOverlayTiles(OverlayTile currentOverlayTile)
     {
-        Dictionary<Vector2Int, OverlayTile> map = MapManager.Instance.map;
+        var map = MapManager.Instance.map;
 
         List<OverlayTile> neighbours = new List<OverlayTile>();
 
-        // Neighbour On Top
+        // Check Right Neighbour
         Vector2Int locationToCheck = new Vector2Int(
-            currentOverlayTile.gridLocation.x,
-            currentOverlayTile.gridLocation.y + 1
-            );
-        if (map.ContainsKey(locationToCheck))
-        {
-            neighbours.Add(map[locationToCheck]);
-        }
-
-        // Neighbour On Bottom
-        locationToCheck = new Vector2Int(
-            currentOverlayTile.gridLocation.x,
-            currentOverlayTile.gridLocation.y - 1
-            );
-        if (map.ContainsKey(locationToCheck))
-        {
-            neighbours.Add(map[locationToCheck]);
-        }
-
-        // Neighbour On Right
-        locationToCheck = new Vector2Int(
             currentOverlayTile.gridLocation.x + 1,
             currentOverlayTile.gridLocation.y
-            );
-        if (map.ContainsKey(locationToCheck))
+        );
+
+        if (searchableTiles.ContainsKey(locationToCheck))
         {
-            neighbours.Add(map[locationToCheck]);
+            neighbours.Add(searchableTiles[locationToCheck]);
         }
 
-        // Neighbour On Left
+        // Check Left Neighbour
         locationToCheck = new Vector2Int(
             currentOverlayTile.gridLocation.x - 1,
             currentOverlayTile.gridLocation.y
-            );
-        if (map.ContainsKey(locationToCheck))
+        );
+
+        if (searchableTiles.ContainsKey(locationToCheck))
         {
-            neighbours.Add(map[locationToCheck]);
+            neighbours.Add(searchableTiles[locationToCheck]);
+        }
+
+        // Check Top Neighbour
+        locationToCheck = new Vector2Int(
+            currentOverlayTile.gridLocation.x,
+            currentOverlayTile.gridLocation.y + 1
+        );
+
+        if (searchableTiles.ContainsKey(locationToCheck))
+        {
+            neighbours.Add(searchableTiles[locationToCheck]);
+        }
+
+        // Check Bottom Neighbour
+        locationToCheck = new Vector2Int(
+            currentOverlayTile.gridLocation.x,
+            currentOverlayTile.gridLocation.y - 1
+        );
+
+        if (searchableTiles.ContainsKey(locationToCheck))
+        {
+            neighbours.Add(searchableTiles[locationToCheck]);
         }
 
         return neighbours;
