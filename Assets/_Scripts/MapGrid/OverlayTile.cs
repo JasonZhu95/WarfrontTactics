@@ -17,6 +17,8 @@ public class OverlayTile : MonoBehaviour
     public int F { get => G + H; }
 
     public bool isBlocked = false;
+    public bool isOccupied = false;
+    public CharacterData characterOnTile;
 
     public OverlayTile previousTile { get; set; }
     public Vector3Int gridLocation { get; set; }

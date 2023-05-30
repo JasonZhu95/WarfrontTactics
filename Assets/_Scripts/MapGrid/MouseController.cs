@@ -21,6 +21,9 @@ public class MouseController : MonoBehaviour
     private List<OverlayTile> path;
     private List<OverlayTile> rangeFinderTiles;
     private bool isMoving;
+    private bool moveAlongPathFinished = false;
+    private bool characterIsSelected = false;
+    private RaycastHit2D? focusedTileHit;
 
     private void Start()
     {
@@ -35,7 +38,7 @@ public class MouseController : MonoBehaviour
 
     private void LateUpdate()
     {
-        RaycastHit2D? focusedTileHit = GetFocusedOnTile();
+        focusedTileHit = GetFocusedOnTile();
 
         // Move the mouse cursor where the overlay tile is selected.
         // Show the overlay tile on mouse press
@@ -44,52 +47,61 @@ public class MouseController : MonoBehaviour
             OverlayTile overlayTile = focusedTileHit.Value.collider.gameObject.GetComponent<OverlayTile>();
             cursor.transform.position = overlayTile.transform.position;
             cursor.gameObject.GetComponent<SpriteRenderer>().sortingOrder = overlayTile.GetComponent<SpriteRenderer>().sortingOrder;
-
-            if(rangeFinderTiles.Contains(overlayTile) && !isMoving)
+            // Check if the selected tile is within range and if the player isn't currently moving
+            if(rangeFinderTiles.Contains(overlayTile) && !isMoving && characterIsSelected)
             {
                 path = pathFinder.FindPath(character.activeTile, overlayTile, rangeFinderTiles);
 
+                // Hide all arrows when player clicks to start moving
                 foreach(OverlayTile tile in rangeFinderTiles)
                 {
                     MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
                 }
 
+                // Calculate the direction of the arrow and set sprite to visible
                 for (int i = 0; i < path.Count; i++)
                 {
-                    var previousTile = i > 0 ? path[i - 1] : character.activeTile;
-                    var futureTile = i < path.Count - 1 ? path[i + 1] : null;
+                    OverlayTile previousTile = i > 0 ? path[i - 1] : character.activeTile;
+                    OverlayTile futureTile = i < path.Count - 1 ? path[i + 1] : null;
 
-                    var arrowDir = arrowTranslator.TranslateDirection(previousTile, path[i], futureTile);
+                    ArrowDirection arrowDir = arrowTranslator.TranslateDirection(previousTile, path[i], futureTile);
                     path[i].SetArrowSprite(arrowDir);
                 }
             }
 
             if (Input.GetMouseButtonDown(0))
             {
-                overlayTile.ShowTile();
-
-                if (character == null)
+                if (overlayTile.isOccupied && !overlayTile.characterOnTile.isEnemy && !overlayTile.characterOnTile.movedThisTurn)
                 {
-                    character = Instantiate(characterPrefab).GetComponent<CharacterData>();
-                    PositionCharacterOnTile(overlayTile);
+                    overlayTile.ShowTile();
+                    character = overlayTile.characterOnTile;
+                    characterIsSelected = true;
                     GetInRangeTiles();
                 }
                 else
                 {
                     isMoving = true;
-                    overlayTile.gameObject.GetComponent<OverlayTile>().HideTile();
                 }
             }
         }
-
+        
+        // Move the character
         if (path.Count > 0 && isMoving)
         {
             MoveAlongPath();
         }
+
+        // Calculate the tiles in range when player isn't moving
         if (path.Count == 0 && character != null)
         {
-            GetInRangeTiles();
             isMoving = false;
+        }
+
+        if (moveAlongPathFinished)
+        {
+            characterIsSelected = false;
+            character = null;
+            moveAlongPathFinished = false;
         }
     }
 
@@ -116,6 +128,11 @@ public class MouseController : MonoBehaviour
             PositionCharacterOnTile(path[0]);
             path.RemoveAt(0);
         }
+        if (path.Count == 0)
+        {
+            moveAlongPathFinished = true;
+        }
+
     }
 
     /* ------------------------------------------------------------------------
@@ -139,6 +156,20 @@ public class MouseController : MonoBehaviour
     }
 
     /* ------------------------------------------------------------------------
+    * Function: GetInRangeTiles
+    * Description: Displays tiles that are only in range of the selected
+    * character
+    * ---------------------------------------------------------------------- */
+    private void GetInRangeTiles()
+    {
+        rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), character.range);
+        foreach (var item in rangeFinderTiles)
+        {
+            item.ShowTile();
+        }
+    }
+
+    /* ------------------------------------------------------------------------
     * Function: PositionCharacterOnTile
     * Description: Move the character object to the tile position that is fed
     * as a parameter. 0.0001f is used to differentiate the sorting layer
@@ -146,22 +177,13 @@ public class MouseController : MonoBehaviour
     * ---------------------------------------------------------------------- */
     private void PositionCharacterOnTile(OverlayTile tile)
     {
+        character.activeTile.isOccupied = false;
+        character.activeTile.characterOnTile = null;
         character.transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
         character.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
-        character.activeTile = tile;
-    }
-
-    /* ------------------------------------------------------------------------
-    * Function: GetInRangeTiles
-    * Description: Displays tiles that are only in range of the selected
-    * character
-    * ---------------------------------------------------------------------- */
-    private void GetInRangeTiles()
-    {
-        rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), 3);
-        foreach (var item in rangeFinderTiles)
-        {
-            item.ShowTile();
-        }
+        character.GetComponent<CharacterData>().activeTile = tile;
+        character.movedThisTurn = true;
+        tile.characterOnTile = character;
+        tile.isOccupied = true;
     }
 }

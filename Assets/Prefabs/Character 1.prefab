@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1401805595357804126}
   - component: {fileID: 1401805595357804125}
   m_Layer: 0
-  m_Name: Character
+  m_Name: Character 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,10 +98,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeTile: {fileID: 0}
-  spawningTileLocation: {x: -5, y: 0}
+  spawningTileLocation: {x: -5, y: 2}
   isEnemy: 0
   attack: 0
   defense: 0
-  range: 3
+  range: 1
   currentHealth: 0
   maxHealth: 0

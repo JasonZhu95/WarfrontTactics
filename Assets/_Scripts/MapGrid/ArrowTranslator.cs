@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* ----------------------------------------------------------------------------
+ * Class: ArrowTranslator
+ * Description: Class in charge of determining which arrow to display when
+ * following a path on mouse hover.
+ * ---------------------------------------------------------------------------- */
 public class ArrowTranslator
 {
     public enum ArrowDirection
