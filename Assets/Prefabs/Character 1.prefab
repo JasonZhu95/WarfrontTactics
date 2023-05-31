@@ -99,9 +99,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeTile: {fileID: 0}
   spawningTileLocation: {x: -5, y: 2}
+  originalSprite: {fileID: -804329060, guid: 80e85988b4d5a4b4fb38109477f1cd81, type: 3}
+  selectedSprite: {fileID: 832581339, guid: 71d2823f553f30449be568457f14656d, type: 3}
   isEnemy: 0
   attack: 0
   defense: 0
   range: 1
+  attackRange: 1
   currentHealth: 0
   maxHealth: 0
+  movedThisTurn: 0

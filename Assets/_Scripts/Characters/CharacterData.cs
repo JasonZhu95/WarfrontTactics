@@ -10,15 +10,29 @@ public class CharacterData : MonoBehaviour
 {
     public OverlayTile activeTile;
     public Vector2Int spawningTileLocation;
+    public Sprite originalSprite;
+    public Sprite selectedSprite;
     public bool isEnemy;
     public int attack;
     public int defense;
     public int range;
+    public int attackRange;
 
     public int currentHealth;
     public int maxHealth;
 
     public bool movedThisTurn;
+    public bool attackedThisTurn;
+
+    private void OnEnable()
+    {
+        TurnManager.OnTurnChanged += OnTurnChanged;        
+    }
+
+    private void OnDisable()
+    {
+        TurnManager.OnTurnChanged -= OnTurnChanged;
+    }
 
     private void Start()
     {
@@ -40,5 +54,11 @@ public class CharacterData : MonoBehaviour
             // Insert dead logic;
             Debug.Log("dead");
         }
+    }
+
+    private void OnTurnChanged(int currentTurn)
+    {
+        movedThisTurn = false;
+        attackedThisTurn = false;
     }
 }

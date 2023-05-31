@@ -44,6 +44,15 @@ public class OverlayTile : MonoBehaviour
     }
 
     /* ------------------------------------------------------------------------
+     * Function: ShowTileRed
+     * Description: Changes the alpha of the sprite to 1 making it visible.
+     * --------------------------------------------------------------------- */
+    public void ShowTileRed()
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
+    }
+
+    /* ------------------------------------------------------------------------
     * Function: HideTile
     * Description: Changes the alpha of the sprite to 0 making it invisible.
     * --------------------------------------------------------------------- */

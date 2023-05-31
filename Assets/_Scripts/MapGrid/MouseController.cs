@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using static ArrowTranslator;
 
 /* ----------------------------------------------------------------------------
- * Class: MapManager
+ * Class: MouseController
  * Description: Script is responsible for managing the selected tile overlay.
- * Also responsible for moving characters along the path based on click.
+ * Responsible for most of the game logic involving player interactions such as
+ * moving and attacking.
  * ---------------------------------------------------------------------------- */
 public class MouseController : MonoBehaviour
 {
@@ -20,9 +21,11 @@ public class MouseController : MonoBehaviour
     private ArrowTranslator arrowTranslator;
     private List<OverlayTile> path;
     private List<OverlayTile> rangeFinderTiles;
-    private bool isMoving;
+    public bool isMoving { get; set; }
     private bool moveAlongPathFinished = false;
     private bool characterIsSelected = false;
+    private bool attackActivated = false;
+    private bool attackFinished = false;
     private RaycastHit2D? focusedTileHit;
 
     private void Start()
@@ -39,16 +42,16 @@ public class MouseController : MonoBehaviour
     private void LateUpdate()
     {
         focusedTileHit = GetFocusedOnTile();
-
         // Move the mouse cursor where the overlay tile is selected.
         // Show the overlay tile on mouse press
-        if (focusedTileHit.HasValue)
+        if (focusedTileHit.HasValue && !isMoving)
         {
             OverlayTile overlayTile = focusedTileHit.Value.collider.gameObject.GetComponent<OverlayTile>();
             cursor.transform.position = overlayTile.transform.position;
             cursor.gameObject.GetComponent<SpriteRenderer>().sortingOrder = overlayTile.GetComponent<SpriteRenderer>().sortingOrder;
-            // Check if the selected tile is within range and if the player isn't currently moving
-            if(rangeFinderTiles.Contains(overlayTile) && !isMoving && characterIsSelected)
+
+            // Place Arrows along path for all tiles in range
+            if(rangeFinderTiles.Contains(overlayTile) && characterIsSelected && !attackActivated)
             {
                 path = pathFinder.FindPath(character.activeTile, overlayTile, rangeFinderTiles);
 
@@ -69,22 +72,49 @@ public class MouseController : MonoBehaviour
                 }
             }
 
+            //Attack the enemy on click
+            if (attackActivated && rangeFinderTiles.Contains(overlayTile) && characterIsSelected)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Debug.Log("Hit");
+                    character.attackedThisTurn = true;
+                    character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
+                    character.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
+                    character = null;
+                    attackActivated = false;
+                    characterIsSelected = false;
+                }
+            }
+
+            // Get the selected tile on Mouse Button Down
             if (Input.GetMouseButtonDown(0))
             {
-                if (overlayTile.isOccupied && !overlayTile.characterOnTile.isEnemy && !overlayTile.characterOnTile.movedThisTurn)
+                // If the current tile is a player owned character and selected
+                if (overlayTile.isOccupied && !overlayTile.characterOnTile.isEnemy && !overlayTile.characterOnTile.attackedThisTurn)
                 {
                     overlayTile.ShowTile();
                     character = overlayTile.characterOnTile;
                     characterIsSelected = true;
-                    GetInRangeTiles();
+                    if (!overlayTile.characterOnTile.movedThisTurn)
+                    {
+                        GetInRangeTiles();
+                    }
+                    else if (overlayTile.characterOnTile.movedThisTurn)
+                    {
+                        attackActivated = true;
+                        GetInAttackRangeTiles();
+                    }
                 }
-                else
+
+                if (characterIsSelected && !attackActivated)
                 {
                     isMoving = true;
                 }
             }
         }
-        
+        Debug.Log("Attack activated: " + attackActivated);
+        Debug.Log("Attack Finished: " + attackFinished);
         // Move the character
         if (path.Count > 0 && isMoving)
         {
@@ -100,8 +130,14 @@ public class MouseController : MonoBehaviour
         if (moveAlongPathFinished)
         {
             characterIsSelected = false;
+            character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
             character = null;
             moveAlongPathFinished = false;
+        }
+
+        if (character != null)
+        {
+            character.GetComponent<SpriteRenderer>().sprite = character.selectedSprite;
         }
     }
 
@@ -167,6 +203,23 @@ public class MouseController : MonoBehaviour
         {
             item.ShowTile();
         }
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: GetInAttackRangeTiles
+    * Description: Displays tiles that are in attack range of the selected
+    * character
+    * ---------------------------------------------------------------------- */
+    private void GetInAttackRangeTiles()
+    {
+        rangeFinderTiles = rangeFinder.GetTilesInRangeNoCenter(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), character.attackRange);
+        foreach (var item in rangeFinderTiles)
+        {
+            item.ShowTileRed();
+        }
+
+        character.activeTile.HideTile();
+        attackActivated = true;
     }
 
     /* ------------------------------------------------------------------------
