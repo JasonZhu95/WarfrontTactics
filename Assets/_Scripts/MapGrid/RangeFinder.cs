@@ -45,12 +45,11 @@ public class RangeFinder
     }
 
     /* ------------------------------------------------------------------------
-    * Function: GetTilesInRangeNoCenter
-    * Description: Takes in the starting location and the maximum range of
-    * the character.  Returns a list of available tiles in range minus the
-    * center tile
+    * Function: GetTilesInRangeForAttack
+    * Description: Returns a list of overlayTiles that are attackable including
+    * enemies.
     * ---------------------------------------------------------------------- */
-    public List<OverlayTile> GetTilesInRangeNoCenter(Vector2Int location, int range)
+    public List<OverlayTile> GetTilesInRangeForAttack(Vector2Int location, int range)
     {
         OverlayTile startingTile = MapManager.Instance.map[location];
         List<OverlayTile> inRangeTiles = new List<OverlayTile>();
@@ -65,7 +64,7 @@ public class RangeFinder
 
             foreach (var item in tileForPreviousStep)
             {
-                surroundingTiles.AddRange(MapManager.Instance.GetSurroundingTiles(new Vector2Int(item.gridLocation.x, item.gridLocation.y)));
+                surroundingTiles.AddRange(MapManager.Instance.GetSurroundingTilesForAttack(new Vector2Int(item.gridLocation.x, item.gridLocation.y)));
             }
 
             inRangeTiles.AddRange(surroundingTiles);

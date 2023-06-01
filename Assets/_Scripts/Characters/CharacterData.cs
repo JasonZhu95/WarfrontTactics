@@ -47,17 +47,21 @@ public class CharacterData : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        Debug.Log("Took damage: " + damage);
+        Debug.Log("Remaining Life: " + currentHealth);
 
         if (currentHealth <= 0)
         {
             currentHealth = 0;
             // Insert dead logic;
-            Debug.Log("dead");
+            activeTile.isOccupied = false;
+            Destroy(gameObject);
         }
     }
 
     private void OnTurnChanged(int currentTurn)
     {
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         movedThisTurn = false;
         attackedThisTurn = false;
     }

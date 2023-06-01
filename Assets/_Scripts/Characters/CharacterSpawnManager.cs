@@ -9,12 +9,22 @@ using UnityEngine;
 public class CharacterSpawnManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] characterPrefabs;
+    [SerializeField] private GameObject characterHolder;
+    [SerializeField] private GameObject enemyHolder;
+    private GameObject character;
 
     private void Start()
     {
         for (int i = 0; i < characterPrefabs.Length; i++)
         {
-            GameObject character = Instantiate(characterPrefabs[i]);
+            if (characterPrefabs[i].GetComponent<CharacterData>().isEnemy)
+            {
+                character = Instantiate(characterPrefabs[i], enemyHolder.transform);
+            }
+            else
+            {
+                character = Instantiate(characterPrefabs[i], characterHolder.transform);
+            }
             Vector2Int locationToSpawn = character.GetComponent<CharacterData>().spawningTileLocation;
             if (MapManager.Instance.map.ContainsKey(locationToSpawn))
             {

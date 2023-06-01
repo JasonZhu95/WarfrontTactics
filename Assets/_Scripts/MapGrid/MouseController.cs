@@ -25,7 +25,6 @@ public class MouseController : MonoBehaviour
     private bool moveAlongPathFinished = false;
     private bool characterIsSelected = false;
     private bool attackActivated = false;
-    private bool attackFinished = false;
     private RaycastHit2D? focusedTileHit;
 
     private void Start()
@@ -50,49 +49,43 @@ public class MouseController : MonoBehaviour
             cursor.transform.position = overlayTile.transform.position;
             cursor.gameObject.GetComponent<SpriteRenderer>().sortingOrder = overlayTile.GetComponent<SpriteRenderer>().sortingOrder;
 
-            // Place Arrows along path for all tiles in range
-            if(rangeFinderTiles.Contains(overlayTile) && characterIsSelected && !attackActivated)
-            {
-                path = pathFinder.FindPath(character.activeTile, overlayTile, rangeFinderTiles);
-
-                // Hide all arrows when player clicks to start moving
-                foreach(OverlayTile tile in rangeFinderTiles)
-                {
-                    MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
-                }
-
-                // Calculate the direction of the arrow and set sprite to visible
-                for (int i = 0; i < path.Count; i++)
-                {
-                    OverlayTile previousTile = i > 0 ? path[i - 1] : character.activeTile;
-                    OverlayTile futureTile = i < path.Count - 1 ? path[i + 1] : null;
-
-                    ArrowDirection arrowDir = arrowTranslator.TranslateDirection(previousTile, path[i], futureTile);
-                    path[i].SetArrowSprite(arrowDir);
-                }
-            }
+            PlaceArrowsOnPath(overlayTile);
 
             //Attack the enemy on click
             if (attackActivated && rangeFinderTiles.Contains(overlayTile) && characterIsSelected)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("Hit");
-                    character.attackedThisTurn = true;
-                    character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
-                    character.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
-                    character = null;
-                    attackActivated = false;
-                    characterIsSelected = false;
+                    if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
+                    {
+                        DeselectUnit();
+                    }
+                    else
+                    {
+                        AttackEnemyOnClick(overlayTile);
+                    }
                 }
             }
 
             // Get the selected tile on Mouse Button Down
             if (Input.GetMouseButtonDown(0))
             {
+                if (characterIsSelected && rangeFinderTiles.Contains(overlayTile) && !attackActivated)
+                {
+                    isMoving = true;
+                    Debug.Log("Moving started");
+                }
+
                 // If the current tile is a player owned character and selected
                 if (overlayTile.isOccupied && !overlayTile.characterOnTile.isEnemy && !overlayTile.characterOnTile.attackedThisTurn)
                 {
+                    // Check to see if we need to reselect the character
+                    if (character != null)
+                    {
+                        characterIsSelected = false;
+                        character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
+                    }
+
                     overlayTile.ShowTile();
                     character = overlayTile.characterOnTile;
                     characterIsSelected = true;
@@ -106,15 +99,13 @@ public class MouseController : MonoBehaviour
                         GetInAttackRangeTiles();
                     }
                 }
-
-                if (characterIsSelected && !attackActivated)
+                else if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
                 {
-                    isMoving = true;
+                    DeselectUnit();
                 }
             }
         }
-        Debug.Log("Attack activated: " + attackActivated);
-        Debug.Log("Attack Finished: " + attackFinished);
+
         // Move the character
         if (path.Count > 0 && isMoving)
         {
@@ -138,6 +129,74 @@ public class MouseController : MonoBehaviour
         if (character != null)
         {
             character.GetComponent<SpriteRenderer>().sprite = character.selectedSprite;
+        }
+
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: AttackEnemyOnClick
+    * Description: Handles attack logic when called.  Takes in the selected
+    * overlay tile.
+    * ---------------------------------------------------------------------- */
+    private void AttackEnemyOnClick(OverlayTile overlayTile)
+    {
+        if (overlayTile.characterOnTile != null)
+        {
+            overlayTile.characterOnTile.TakeDamage(character.attack);
+        }
+        character.attackedThisTurn = true;
+        character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
+        character.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
+        character = null;
+        attackActivated = false;
+        characterIsSelected = false;
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: AttackEnemyOnClick
+    * Description: Handles attack logic when called.  Takes in the selected
+    * overlay tile.
+    * ---------------------------------------------------------------------- */
+
+    private void DeselectUnit()
+    {
+        if (character != null)
+        {
+            characterIsSelected = false;
+            character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
+            character = null;
+        }
+        rangeFinderTiles.Clear();
+        Debug.Log("Deselect logic");
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: PlaceArrowsOnPath
+    * Description: Find if an overlay tile is in range and place a 
+    * corresponding arrow alogn the path
+    * ---------------------------------------------------------------------- */
+    private void PlaceArrowsOnPath(OverlayTile overlayTile)
+    {
+        // Place Arrows along path for all tiles in range
+        if (rangeFinderTiles.Contains(overlayTile) && characterIsSelected && !attackActivated && rangeFinderTiles.Count > 0)
+        {
+            path = pathFinder.FindPath(character.activeTile, overlayTile, rangeFinderTiles);
+
+            // Hide all arrows when player clicks to start moving
+            foreach (OverlayTile tile in rangeFinderTiles)
+            {
+                MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
+            }
+
+            // Calculate the direction of the arrow and set sprite to visible
+            for (int i = 0; i < path.Count; i++)
+            {
+                OverlayTile previousTile = i > 0 ? path[i - 1] : character.activeTile;
+                OverlayTile futureTile = i < path.Count - 1 ? path[i + 1] : null;
+
+                ArrowDirection arrowDir = arrowTranslator.TranslateDirection(previousTile, path[i], futureTile);
+                path[i].SetArrowSprite(arrowDir);
+            }
         }
     }
 
@@ -212,7 +271,7 @@ public class MouseController : MonoBehaviour
     * ---------------------------------------------------------------------- */
     private void GetInAttackRangeTiles()
     {
-        rangeFinderTiles = rangeFinder.GetTilesInRangeNoCenter(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), character.attackRange);
+        rangeFinderTiles = rangeFinder.GetTilesInRangeForAttack(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), character.attackRange);
         foreach (var item in rangeFinderTiles)
         {
             item.ShowTileRed();

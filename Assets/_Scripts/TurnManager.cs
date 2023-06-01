@@ -18,6 +18,8 @@ public class TurnManager : MonoBehaviour
     private void Start()
     {
         StartTurn(currentTurn);
+
+        //ENEMY Turns are even
     }
 
     private void Update()
@@ -36,6 +38,12 @@ public class TurnManager : MonoBehaviour
     private void EndTurn()
     {
         currentTurn++;
-        StartTurn(currentTurn);
+        if (currentTurn % 2 == 0)
+        {
+            Debug.Log("Enemy Turn");
+        }
+        else {
+            StartTurn(currentTurn);
+        }
     }
 }

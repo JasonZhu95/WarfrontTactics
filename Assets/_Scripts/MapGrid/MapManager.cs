@@ -73,6 +73,7 @@ public class MapManager : MonoBehaviour
             }
         }
     }
+
     /* ------------------------------------------------------------------------
     * Function: GetSurroundingTiles
     * Description: Takes a Vector2Int Position of a tile and returns a list of
@@ -86,7 +87,7 @@ public class MapManager : MonoBehaviour
         Vector2Int TileToCheck = new Vector2Int(originTile.x + 1, originTile.y);
         if (map.ContainsKey(TileToCheck))
         {
-            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && !map[TileToCheck].isBlocked)
                 surroundingTiles.Add(map[TileToCheck]);
         }
 
@@ -94,7 +95,7 @@ public class MapManager : MonoBehaviour
         TileToCheck = new Vector2Int(originTile.x - 1, originTile.y);
         if (map.ContainsKey(TileToCheck))
         {
-            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && !map[TileToCheck].isBlocked)
                 surroundingTiles.Add(map[TileToCheck]);
         }
 
@@ -102,7 +103,7 @@ public class MapManager : MonoBehaviour
         TileToCheck = new Vector2Int(originTile.x, originTile.y + 1);
         if (map.ContainsKey(TileToCheck))
         {
-            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && !map[TileToCheck].isBlocked)
                 surroundingTiles.Add(map[TileToCheck]);
         }
 
@@ -110,7 +111,50 @@ public class MapManager : MonoBehaviour
         TileToCheck = new Vector2Int(originTile.x, originTile.y - 1);
         if (map.ContainsKey(TileToCheck))
         {
-            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1)
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1&& !map[TileToCheck].isBlocked)
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        return surroundingTiles;
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: GetSurroundingTilesForAttack
+    * Description: Gets surrounding tiles including enemies
+    * ---------------------------------------------------------------------- */
+    public List<OverlayTile> GetSurroundingTilesForAttack(Vector2Int originTile)
+    {
+        var surroundingTiles = new List<OverlayTile>();
+
+        // Check Right Neighbour
+        Vector2Int TileToCheck = new Vector2Int(originTile.x + 1, originTile.y);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && (!map[TileToCheck].isBlocked || map[TileToCheck].characterOnTile != null))
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        // Check Left Neighbour
+        TileToCheck = new Vector2Int(originTile.x - 1, originTile.y);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && (!map[TileToCheck].isBlocked || map[TileToCheck].characterOnTile != null))
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        // Check Top Neighbour
+        TileToCheck = new Vector2Int(originTile.x, originTile.y + 1);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && (!map[TileToCheck].isBlocked || map[TileToCheck].characterOnTile != null))
+                surroundingTiles.Add(map[TileToCheck]);
+        }
+
+        // Check Bottom Neighbour
+        TileToCheck = new Vector2Int(originTile.x, originTile.y - 1);
+        if (map.ContainsKey(TileToCheck))
+        {
+            if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && (!map[TileToCheck].isBlocked || map[TileToCheck].characterOnTile != null))
                 surroundingTiles.Add(map[TileToCheck]);
         }
 

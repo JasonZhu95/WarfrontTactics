@@ -102,10 +102,11 @@ MonoBehaviour:
   originalSprite: {fileID: -804329060, guid: 80e85988b4d5a4b4fb38109477f1cd81, type: 3}
   selectedSprite: {fileID: 832581339, guid: 71d2823f553f30449be568457f14656d, type: 3}
   isEnemy: 0
-  attack: 0
+  attack: 10
   defense: 0
   range: 3
   attackRange: 1
   currentHealth: 0
-  maxHealth: 0
+  maxHealth: 10
   movedThisTurn: 0
+  attackedThisTurn: 0

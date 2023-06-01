@@ -32,6 +32,14 @@ public class OverlayTile : MonoBehaviour
         {
             HideTile();
         }
+        if (isOccupied)
+        {
+            isBlocked = true;
+        }
+        else
+        {
+            isBlocked = false;
+        }
     }
 
     /* ------------------------------------------------------------------------
