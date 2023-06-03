@@ -106,7 +106,7 @@ MonoBehaviour:
   defense: 0
   range: 1
   attackRange: 1
-  currentHealth: 0
+  currentHealth: 10
   maxHealth: 10
   movedThisTurn: 0
   attackedThisTurn: 0

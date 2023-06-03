@@ -5,11 +5,23 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     [SerializeField] private Transform enemyHolder;
+    private TurnManager turnManager;
     public List<EnemyData> enemies;
     public int currentIndex = 0;
 
+    private void OnEnable()
+    {
+        CharacterData.OnEnemyDeath += RemoveEnemyFromList;
+    }
+
+    private void OnDisable()
+    {
+        CharacterData.OnEnemyDeath -= RemoveEnemyFromList;
+    }
+
     private void Start()
     {
+        turnManager = GameObject.Find("TurnManager").GetComponent<TurnManager>();
         GetAllChildObjects(enemyHolder);
         TurnManager.OnEnemyTurnChanged += StartEnemyTurnActions;
     }
@@ -50,10 +62,25 @@ public class EnemyManager : MonoBehaviour
             EnemyData currentEnemy = enemies[currentIndex];
             currentEnemy.PerformAction();
         }
+        else if (currentIndex == enemies.Count)
+        {
+            currentIndex = 0;
+            turnManager.EndTurn();
+        }
     }
 
     public void IncrementEnemyIndex()
     {
         currentIndex++;
+    }
+
+    private void RemoveEnemyFromList(EnemyData enemy)
+    {
+        enemies.Remove(enemy);
+        if (enemies.Count == 0)
+        {
+            //TODO: ADD GAME WIN LOGIC
+            Debug.Log("All Enemies have been destroyed");
+        }
     }
 }

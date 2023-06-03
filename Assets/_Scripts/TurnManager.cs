@@ -44,9 +44,10 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    private void EndTurn()
+    public void EndTurn()
     {
         currentTurn++;
         StartTurn(currentTurn);
     }
+
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,9 @@ public class CharacterData : MonoBehaviour
 
     public bool movedThisTurn;
     public bool attackedThisTurn;
+
+    public static event Action<EnemyData> OnEnemyDeath;
+    public static event Action OnCharacterDeath;
 
     private void OnEnable()
     {
@@ -56,6 +60,14 @@ public class CharacterData : MonoBehaviour
             // Insert dead logic;
             activeTile.isOccupied = false;
             activeTile.isBlocked = false;
+            if (isEnemy)
+            {
+                OnEnemyDeath?.Invoke((EnemyData)this);
+            }
+            else
+            {
+                OnCharacterDeath?.Invoke();
+            }
             Destroy(gameObject);
         }
     }

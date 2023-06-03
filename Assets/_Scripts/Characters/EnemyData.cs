@@ -41,6 +41,12 @@ public class EnemyData : CharacterData
     private void OnEnable()
     {
         TurnManager.OnPlayerTurnChanged -= OnPlayerTurnChanged;
+        OnCharacterDeath += FindCharacterTarget;
+    }
+
+    private void OnDisable()
+    {
+        OnCharacterDeath -= FindCharacterTarget;
     }
 
     private void Update()
@@ -48,6 +54,12 @@ public class EnemyData : CharacterData
         if (path.Count > 0 && isMoving)
         {
             MoveAlongPath();
+        }
+
+        if (path.Count == 0 && isMoving)
+        {
+            isMoving = false;
+            AttackCharactersInRange();
         }
     }
 
@@ -65,6 +77,7 @@ public class EnemyData : CharacterData
     * ---------------------------------------------------------------------- */
     private void FindCharacterTarget()
     {
+        Debug.Log("Called");
         foreach (OverlayTile tile in MapManager.Instance.map.Values)
         {
             if (tile.characterOnTile != null && !tile.characterOnTile.isEnemy)
@@ -73,6 +86,7 @@ public class EnemyData : CharacterData
             }
         }
         target = ReturnClosestCharacter(characterList);
+        characterList.Clear();
     }
 
     private void ShowTilesInRange()
@@ -112,6 +126,13 @@ public class EnemyData : CharacterData
             charactersInRange[randomIndex].TakeDamage(attack);
             charactersInRange.Clear();
         }
+
+        StartCoroutine(FinishTurn());
+    }
+
+    private IEnumerator FinishTurn()
+    {
+        yield return new WaitForSeconds(.5f);
         enemyManager.IncrementEnemyIndex();
         enemyManager.PerformNextAction();
     }
@@ -136,8 +157,9 @@ public class EnemyData : CharacterData
 
             ArrowDirection arrowDir = arrowTranslator.TranslateDirection(previousTile, path[i], futureTile);
             path[i].SetArrowSprite(arrowDir);
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(.3f);
         }
+
         foreach (OverlayTile tile in rangeFinderTiles)
         {
             tile.HideTile();
@@ -151,32 +173,29 @@ public class EnemyData : CharacterData
         isMoving = true;
         float step = 3 * Time.deltaTime;
 
-        float zIndex = path[0].transform.position.z;
-        transform.position = Vector2.MoveTowards(transform.position, path[0].transform.position, step);
-        transform.position = new Vector3(transform.position.x, transform.position.y, zIndex);
-
-        foreach (OverlayTile tile in rangeFinderTiles)
+        if (path.Count > 0)
         {
-            MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
-        }
 
-        if (Vector2.Distance(transform.position, path[0].transform.position) < 0.0001f)
-        {
-            PositionOnTile(path[0]);
-            path.RemoveAt(0);
-        }
+            float zIndex = path[0].transform.position.z;
+            transform.position = Vector2.MoveTowards(transform.position, path[0].transform.position, step);
+            transform.position = new Vector3(transform.position.x, transform.position.y, zIndex);
 
-        if (path.Count == 0)
-        {
-            isMoving = false;
-            AttackCharactersInRange();
+            foreach (OverlayTile tile in rangeFinderTiles)
+            {
+                MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
+            }
+
+            if (Vector2.Distance(transform.position, path[0].transform.position) < 0.0001f)
+            {
+                PositionOnTile(path[0]);
+                path.RemoveAt(0);
+            }
         }
     }
 
     private void AttackCharactersInRange()
     {
         ShowTilesInAttackRange();
-
     }
 
     /* ------------------------------------------------------------------------
