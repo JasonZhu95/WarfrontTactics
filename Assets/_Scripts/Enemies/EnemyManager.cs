@@ -45,8 +45,11 @@ public class EnemyManager : MonoBehaviour
     * ---------------------------------------------------------------------- */
     public void PerformNextAction()
     {
-        EnemyData currentEnemy = enemies[currentIndex];
-        currentEnemy.PerformAction();
+        if (currentIndex < enemies.Count)
+        {
+            EnemyData currentEnemy = enemies[currentIndex];
+            currentEnemy.PerformAction();
+        }
     }
 
     public void IncrementEnemyIndex()

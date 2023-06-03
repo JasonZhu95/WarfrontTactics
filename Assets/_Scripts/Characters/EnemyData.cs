@@ -21,6 +21,7 @@ public class EnemyData : CharacterData
     private ArrowTranslator arrowTranslator;
     private List<OverlayTile> rangeFinderTiles;
     private List<OverlayTile> path;
+    private List<CharacterData> charactersInRange = new List<CharacterData>();
     private bool isMoving = false;
 
     private void Start()
@@ -89,7 +90,30 @@ public class EnemyData : CharacterData
         foreach (var item in rangeFinderTiles)
         {
             item.ShowTileRed();
+            if (item.isOccupied && !item.characterOnTile.isEnemy)
+            {
+                charactersInRange.Add(item.characterOnTile);
+            }
         }
+        StartCoroutine(DealDamage());
+    }
+
+    private IEnumerator DealDamage()
+    {
+        yield return new WaitForSeconds(1f);
+
+        foreach (OverlayTile tile in rangeFinderTiles)
+        {
+            tile.HideTile();
+        }
+        if (charactersInRange.Count > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, charactersInRange.Count);
+            charactersInRange[randomIndex].TakeDamage(attack);
+            charactersInRange.Clear();
+        }
+        enemyManager.IncrementEnemyIndex();
+        enemyManager.PerformNextAction();
     }
 
     private void PlaceArrowsOnPath()
@@ -152,6 +176,7 @@ public class EnemyData : CharacterData
     private void AttackCharactersInRange()
     {
         ShowTilesInAttackRange();
+
     }
 
     /* ------------------------------------------------------------------------
