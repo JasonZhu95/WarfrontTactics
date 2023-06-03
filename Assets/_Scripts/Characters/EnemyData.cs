@@ -48,10 +48,6 @@ public class EnemyData : CharacterData
         {
             MoveAlongPath();
         }
-        if (path.Count == 0)
-        {
-            isMoving = false;
-        }
     }
 
     public void PerformAction()
@@ -59,9 +55,6 @@ public class EnemyData : CharacterData
         FindCharacterTarget();
         ShowTilesInRange();
         PlaceArrowsOnPath();
-        AttackCharactersInRange();
-
-        enemyManager.currentIndex++;
     }
 
     /* ------------------------------------------------------------------------
@@ -90,6 +83,15 @@ public class EnemyData : CharacterData
         }
     }
 
+    private void ShowTilesInAttackRange()
+    {
+        rangeFinderTiles = rangeFinder.GetTilesInRangeForAttack(new Vector2Int(activeTile.gridLocation.x, activeTile.gridLocation.y), attackRange);
+        foreach (var item in rangeFinderTiles)
+        {
+            item.ShowTileRed();
+        }
+    }
+
     private void PlaceArrowsOnPath()
     {
         path = pathFinder.FindPath(activeTile, ReturnClosestTileInRangeToTarget(), rangeFinderTiles);
@@ -112,12 +114,12 @@ public class EnemyData : CharacterData
             path[i].SetArrowSprite(arrowDir);
             yield return new WaitForSeconds(.5f);
         }
-        MoveAlongPath();
         foreach (OverlayTile tile in rangeFinderTiles)
         {
             tile.HideTile();
         }
         rangeFinderTiles.Clear();
+        MoveAlongPath();
     }
 
     private void MoveAlongPath()
@@ -139,11 +141,17 @@ public class EnemyData : CharacterData
             PositionOnTile(path[0]);
             path.RemoveAt(0);
         }
+
+        if (path.Count == 0)
+        {
+            isMoving = false;
+            AttackCharactersInRange();
+        }
     }
 
     private void AttackCharactersInRange()
     {
-        throw new NotImplementedException();
+        ShowTilesInAttackRange();
     }
 
     /* ------------------------------------------------------------------------
@@ -187,12 +195,14 @@ public class EnemyData : CharacterData
     {
         activeTile.isOccupied = false;
         activeTile.characterOnTile = null;
+        activeTile.isBlocked = false;
         transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
         GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
         activeTile = tile;
         movedThisTurn = true;
         tile.characterOnTile = this;
         tile.isOccupied = true;
+        tile.isBlocked = true;
 
     }
 }

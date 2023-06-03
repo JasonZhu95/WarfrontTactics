@@ -55,6 +55,7 @@ public class CharacterData : MonoBehaviour
             currentHealth = 0;
             // Insert dead logic;
             activeTile.isOccupied = false;
+            activeTile.isBlocked = false;
             Destroy(gameObject);
         }
     }

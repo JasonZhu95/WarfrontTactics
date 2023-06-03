@@ -78,7 +78,6 @@ public class MouseController : MonoBehaviour
                     if (characterIsSelected && rangeFinderTiles.Contains(overlayTile) && !attackActivated)
                     {
                         isMoving = true;
-                        Debug.Log("Moving started");
                     }
 
                     // If the current tile is a player owned character and selected
@@ -300,11 +299,13 @@ public class MouseController : MonoBehaviour
     {
         character.activeTile.isOccupied = false;
         character.activeTile.characterOnTile = null;
+        character.activeTile.isBlocked = false;
         character.transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
         character.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
         character.GetComponent<CharacterData>().activeTile = tile;
         character.movedThisTurn = true;
         tile.characterOnTile = character;
         tile.isOccupied = true;
+        tile.isBlocked = true;
     }
 }

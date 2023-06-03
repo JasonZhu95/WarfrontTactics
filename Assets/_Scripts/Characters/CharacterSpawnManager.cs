@@ -46,5 +46,6 @@ public class CharacterSpawnManager : MonoBehaviour
         characterToMove.GetComponent<CharacterData>().activeTile = tile;
         tile.characterOnTile = characterToMove.GetComponent<CharacterData>();
         tile.isOccupied = true;
+        tile.isBlocked = true;
     }
 }

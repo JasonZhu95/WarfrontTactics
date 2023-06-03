@@ -45,10 +45,12 @@ public class EnemyManager : MonoBehaviour
     * ---------------------------------------------------------------------- */
     public void PerformNextAction()
     {
-        while (currentIndex < enemies.Count)
-        {
-            EnemyData currentEnemy = enemies[currentIndex];
-            currentEnemy.PerformAction();
-        }
+        EnemyData currentEnemy = enemies[currentIndex];
+        currentEnemy.PerformAction();
+    }
+
+    public void IncrementEnemyIndex()
+    {
+        currentIndex++;
     }
 }

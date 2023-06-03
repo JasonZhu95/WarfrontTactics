@@ -71,7 +71,6 @@ public class RangeFinder
             tileForPreviousStep = surroundingTiles.Distinct().ToList();
             stepCount++;
         }
-
         return inRangeTiles.Distinct().ToList();
     }
 }
