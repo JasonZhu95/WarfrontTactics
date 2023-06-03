@@ -26,12 +26,12 @@ public class CharacterData : MonoBehaviour
 
     private void OnEnable()
     {
-        TurnManager.OnTurnChanged += OnTurnChanged;        
+        TurnManager.OnPlayerTurnChanged += OnPlayerTurnChanged;        
     }
 
     private void OnDisable()
     {
-        TurnManager.OnTurnChanged -= OnTurnChanged;
+        TurnManager.OnPlayerTurnChanged -= OnPlayerTurnChanged;
     }
 
     private void Start()
@@ -59,7 +59,7 @@ public class CharacterData : MonoBehaviour
         }
     }
 
-    private void OnTurnChanged(int currentTurn)
+    public void OnPlayerTurnChanged(int currentTurn)
     {
         gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         movedThisTurn = false;

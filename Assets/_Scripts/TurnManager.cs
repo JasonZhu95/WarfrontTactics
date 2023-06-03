@@ -10,10 +10,11 @@ using UnityEngine;
 public class TurnManager : MonoBehaviour
 {
     public delegate void TurnChangedHandler(int currentTurn);
-    public static event TurnChangedHandler OnTurnChanged;
+    public static event TurnChangedHandler OnEnemyTurnChanged;
+    public static event TurnChangedHandler OnPlayerTurnChanged;
 
     [SerializeField] private MouseController mouseController;
-    private int currentTurn = 1;
+    public int currentTurn = 1;
 
     private void Start()
     {
@@ -32,18 +33,20 @@ public class TurnManager : MonoBehaviour
 
     private void StartTurn(int turn)
     {
-        OnTurnChanged?.Invoke(turn);
+        Debug.Log("turn number: " + turn);
+        if (turn % 2 == 0)
+        {
+            OnEnemyTurnChanged?.Invoke(turn);
+        }
+        else
+        {
+            OnPlayerTurnChanged?.Invoke(turn);
+        }
     }
 
     private void EndTurn()
     {
         currentTurn++;
-        if (currentTurn % 2 == 0)
-        {
-            Debug.Log("Enemy Turn");
-        }
-        else {
-            StartTurn(currentTurn);
-        }
+        StartTurn(currentTurn);
     }
 }

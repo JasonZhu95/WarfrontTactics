@@ -15,6 +15,7 @@ public class MouseController : MonoBehaviour
     [SerializeField] private float speed = 3;
     [SerializeField] private GameObject characterPrefab;
     private CharacterData character;
+    private TurnManager turnManager;
 
     private PathFinder pathFinder;
     private RangeFinder rangeFinder;
@@ -32,6 +33,7 @@ public class MouseController : MonoBehaviour
         pathFinder = new PathFinder();
         rangeFinder = new RangeFinder();
         arrowTranslator = new ArrowTranslator();
+        turnManager = GameObject.Find("TurnManager").GetComponent<TurnManager>();
 
         path = new List<OverlayTile>();
         isMoving = false;
@@ -40,97 +42,104 @@ public class MouseController : MonoBehaviour
 
     private void LateUpdate()
     {
-        focusedTileHit = GetFocusedOnTile();
-        // Move the mouse cursor where the overlay tile is selected.
-        // Show the overlay tile on mouse press
-        if (focusedTileHit.HasValue && !isMoving)
+        if (turnManager.currentTurn % 2 == 1)
         {
-            OverlayTile overlayTile = focusedTileHit.Value.collider.gameObject.GetComponent<OverlayTile>();
-            cursor.transform.position = overlayTile.transform.position;
-            cursor.gameObject.GetComponent<SpriteRenderer>().sortingOrder = overlayTile.GetComponent<SpriteRenderer>().sortingOrder;
-
-            PlaceArrowsOnPath(overlayTile);
-
-            //Attack the enemy on click
-            if (attackActivated && rangeFinderTiles.Contains(overlayTile) && characterIsSelected)
+            cursor.SetActive(true);
+            focusedTileHit = GetFocusedOnTile();
+            // Move the mouse cursor where the overlay tile is selected.
+            // Show the overlay tile on mouse press
+            if (focusedTileHit.HasValue && !isMoving)
             {
+                OverlayTile overlayTile = focusedTileHit.Value.collider.gameObject.GetComponent<OverlayTile>();
+                cursor.transform.position = overlayTile.transform.position;
+                cursor.gameObject.GetComponent<SpriteRenderer>().sortingOrder = overlayTile.GetComponent<SpriteRenderer>().sortingOrder;
+
+                PlaceArrowsOnPath(overlayTile);
+
+                //Attack the enemy on click
+                if (attackActivated && rangeFinderTiles.Contains(overlayTile) && characterIsSelected)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
+                        {
+                            DeselectUnit();
+                        }
+                        else
+                        {
+                            AttackEnemyOnClick(overlayTile);
+                        }
+                    }
+                }
+
+                // Get the selected tile on Mouse Button Down
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
+                    if (characterIsSelected && rangeFinderTiles.Contains(overlayTile) && !attackActivated)
+                    {
+                        isMoving = true;
+                        Debug.Log("Moving started");
+                    }
+
+                    // If the current tile is a player owned character and selected
+                    if (overlayTile.isOccupied && !overlayTile.characterOnTile.isEnemy && !overlayTile.characterOnTile.attackedThisTurn)
+                    {
+                        // Check to see if we need to reselect the character
+                        if (character != null)
+                        {
+                            characterIsSelected = false;
+                            character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
+                        }
+
+                        overlayTile.ShowTile();
+                        character = overlayTile.characterOnTile;
+                        characterIsSelected = true;
+                        if (!overlayTile.characterOnTile.movedThisTurn)
+                        {
+                            GetInRangeTiles();
+                        }
+                        else if (overlayTile.characterOnTile.movedThisTurn)
+                        {
+                            attackActivated = true;
+                            GetInAttackRangeTiles();
+                        }
+                    }
+                    else if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
                     {
                         DeselectUnit();
                     }
-                    else
-                    {
-                        AttackEnemyOnClick(overlayTile);
-                    }
                 }
             }
 
-            // Get the selected tile on Mouse Button Down
-            if (Input.GetMouseButtonDown(0))
+            // Move the character
+            if (path.Count > 0 && isMoving)
             {
-                if (characterIsSelected && rangeFinderTiles.Contains(overlayTile) && !attackActivated)
-                {
-                    isMoving = true;
-                    Debug.Log("Moving started");
-                }
+                MoveAlongPath();
+            }
 
-                // If the current tile is a player owned character and selected
-                if (overlayTile.isOccupied && !overlayTile.characterOnTile.isEnemy && !overlayTile.characterOnTile.attackedThisTurn)
-                {
-                    // Check to see if we need to reselect the character
-                    if (character != null)
-                    {
-                        characterIsSelected = false;
-                        character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
-                    }
+            // Calculate the tiles in range when player isn't moving
+            if (path.Count == 0 && character != null)
+            {
+                isMoving = false;
+            }
 
-                    overlayTile.ShowTile();
-                    character = overlayTile.characterOnTile;
-                    characterIsSelected = true;
-                    if (!overlayTile.characterOnTile.movedThisTurn)
-                    {
-                        GetInRangeTiles();
-                    }
-                    else if (overlayTile.characterOnTile.movedThisTurn)
-                    {
-                        attackActivated = true;
-                        GetInAttackRangeTiles();
-                    }
-                }
-                else if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
-                {
-                    DeselectUnit();
-                }
+            if (moveAlongPathFinished)
+            {
+                characterIsSelected = false;
+                character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
+                character = null;
+                moveAlongPathFinished = false;
+            }
+
+            if (character != null)
+            {
+                character.GetComponent<SpriteRenderer>().sprite = character.selectedSprite;
             }
         }
-
-        // Move the character
-        if (path.Count > 0 && isMoving)
+        else
         {
-            MoveAlongPath();
+            cursor.SetActive(false);
         }
-
-        // Calculate the tiles in range when player isn't moving
-        if (path.Count == 0 && character != null)
-        {
-            isMoving = false;
-        }
-
-        if (moveAlongPathFinished)
-        {
-            characterIsSelected = false;
-            character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
-            character = null;
-            moveAlongPathFinished = false;
-        }
-
-        if (character != null)
-        {
-            character.GetComponent<SpriteRenderer>().sprite = character.selectedSprite;
-        }
-
     }
 
     /* ------------------------------------------------------------------------
