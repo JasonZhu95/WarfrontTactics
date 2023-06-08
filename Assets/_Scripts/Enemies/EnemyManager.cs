@@ -39,8 +39,10 @@ public class EnemyManager : MonoBehaviour
         {
             Transform child = parent.GetChild(i);
             GameObject childObject = child.gameObject;
-
-            enemies.Add(childObject.GetComponent<EnemyData>());
+            if (childObject.GetComponent<EnemyData>() != null)
+            {
+                enemies.Add(childObject.GetComponent<EnemyData>());
+            }
 
             GetAllChildObjects(child);
         }

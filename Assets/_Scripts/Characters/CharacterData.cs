@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /* ----------------------------------------------------------------------------
  * Class: CharacterData
@@ -21,6 +23,8 @@ public class CharacterData : MonoBehaviour
 
     public int currentHealth;
     public int maxHealth;
+    [SerializeField] private Image healthBarImage;
+    [SerializeField] private TextMeshProUGUI damageText;
 
     public bool movedThisTurn;
     public bool attackedThisTurn;
@@ -51,8 +55,11 @@ public class CharacterData : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log("Took damage: " + damage);
-        Debug.Log("Remaining Life: " + currentHealth);
+        UpdateHealthBar(maxHealth, currentHealth);
+        if (currentHealth > 0)
+        {
+            StartCoroutine(ShowDamageText(damage));
+        }
 
         if (currentHealth <= 0)
         {
@@ -72,10 +79,38 @@ public class CharacterData : MonoBehaviour
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: OnPlayerTurnChanged
+    * Description: Takes care of the logic when the player turn is beginning
+    * ---------------------------------------------------------------------- */
     public void OnPlayerTurnChanged(int currentTurn)
     {
         gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         movedThisTurn = false;
         attackedThisTurn = false;
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: UpdateHealthBar
+    * Description: Updates the fill amoun for the health bar image based
+    * on remaining life total.
+    * ---------------------------------------------------------------------- */
+    private void UpdateHealthBar(float maxHealth, float currentHealth)
+    {
+        healthBarImage.fillAmount = currentHealth / maxHealth;
+        if (currentHealth == 0)
+        {
+            healthBarImage.fillAmount = 0;
+        }
+    }
+
+    private IEnumerator ShowDamageText(int damageAmount)
+    {
+        Debug.Log("yo");
+        damageText.gameObject.SetActive(true);
+        damageText.text = "-" + damageAmount.ToString();
+        yield return new WaitForSeconds(.5f);
+
+        damageText.gameObject.SetActive(false);
     }
 }

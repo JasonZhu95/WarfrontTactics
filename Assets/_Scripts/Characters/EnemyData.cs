@@ -77,7 +77,6 @@ public class EnemyData : CharacterData
     * ---------------------------------------------------------------------- */
     private void FindCharacterTarget()
     {
-        Debug.Log("Called");
         foreach (OverlayTile tile in MapManager.Instance.map.Values)
         {
             if (tile.characterOnTile != null && !tile.characterOnTile.isEnemy)
