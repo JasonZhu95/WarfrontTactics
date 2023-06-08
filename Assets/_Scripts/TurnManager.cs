@@ -31,9 +31,13 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: StartTurn
+    * Description: Starts the next turn and checks if it is a player turn
+    * or an enemy turn
+    * ---------------------------------------------------------------------- */
     private void StartTurn(int turn)
     {
-        Debug.Log("turn number: " + turn);
         if (turn % 2 == 0)
         {
             OnEnemyTurnChanged?.Invoke(turn);
@@ -44,6 +48,10 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: EndTurn
+    * Description: Ends the turn and increases the turn index
+    * ---------------------------------------------------------------------- */
     public void EndTurn()
     {
         currentTurn++;

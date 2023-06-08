@@ -211,6 +211,7 @@ MonoBehaviour:
   attackRange: 1
   currentHealth: 10
   maxHealth: 10
+  characterName: Jeffrey
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 6862442386782530319}
   movedThisTurn: 0

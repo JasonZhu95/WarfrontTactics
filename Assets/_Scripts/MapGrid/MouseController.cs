@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using static ArrowTranslator;
+using System;
 
 /* ----------------------------------------------------------------------------
  * Class: MouseController
@@ -27,6 +28,8 @@ public class MouseController : MonoBehaviour
     private bool characterIsSelected = false;
     private bool attackActivated = false;
     private RaycastHit2D? focusedTileHit;
+
+    public event Action OnCharacterSelect;
 
     private void Start()
     {
@@ -91,7 +94,7 @@ public class MouseController : MonoBehaviour
                         }
 
                         overlayTile.ShowTile();
-                        SelectedCharacter = overlayTile.characterOnTile;
+                        SetSelectedCharacter(overlayTile.characterOnTile);
                         characterIsSelected = true;
                         if (!overlayTile.characterOnTile.movedThisTurn)
                         {
@@ -126,7 +129,7 @@ public class MouseController : MonoBehaviour
             {
                 characterIsSelected = false;
                 SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
-                SelectedCharacter = null;
+                SetSelectedCharacter(null);
                 moveAlongPathFinished = false;
             }
 
@@ -155,7 +158,7 @@ public class MouseController : MonoBehaviour
         SelectedCharacter.attackedThisTurn = true;
         SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
         SelectedCharacter.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
-        SelectedCharacter = null;
+        SetSelectedCharacter(null);
         attackActivated = false;
         characterIsSelected = false;
     }
@@ -172,10 +175,9 @@ public class MouseController : MonoBehaviour
         {
             characterIsSelected = false;
             SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
-            SelectedCharacter = null;
+            SetSelectedCharacter(null);
         }
         rangeFinderTiles.Clear();
-        Debug.Log("Deselect logic");
     }
 
     /* ------------------------------------------------------------------------
@@ -307,5 +309,16 @@ public class MouseController : MonoBehaviour
         tile.characterOnTile = SelectedCharacter;
         tile.isOccupied = true;
         tile.isBlocked = true;
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: SetSelctedCharacter
+    * Description: Sets the character on selection and invokes the event action
+    * for character selection.
+    * ---------------------------------------------------------------------- */
+    private void SetSelectedCharacter(CharacterData character)
+    {
+        SelectedCharacter = character;
+        OnCharacterSelect?.Invoke();
     }
 }

@@ -211,6 +211,7 @@ MonoBehaviour:
   attackRange: 1
   currentHealth: 10
   maxHealth: 10
+  characterName: Jason
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 7771008121818669349}
   movedThisTurn: 0

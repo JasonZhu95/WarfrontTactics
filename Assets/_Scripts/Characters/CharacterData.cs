@@ -23,6 +23,7 @@ public class CharacterData : MonoBehaviour
 
     public int currentHealth;
     public int maxHealth;
+    public string characterName;
     [SerializeField] private Image healthBarImage;
     [SerializeField] private TextMeshProUGUI damageText;
 
@@ -104,9 +105,13 @@ public class CharacterData : MonoBehaviour
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Coroutine: ShowDamageText
+    * Description: Turns on the damage text and turns it off after half a
+    * second
+    * ---------------------------------------------------------------------- */
     private IEnumerator ShowDamageText(int damageAmount)
     {
-        Debug.Log("yo");
         damageText.gameObject.SetActive(true);
         damageText.text = "-" + damageAmount.ToString();
         yield return new WaitForSeconds(.5f);

@@ -211,6 +211,7 @@ MonoBehaviour:
   attackRange: 1
   currentHealth: 10
   maxHealth: 10
+  characterName: Joshua
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 5461704214010665792}
   movedThisTurn: 0

@@ -48,6 +48,11 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: StartEnemyTurnActions
+    * Description: A filler function to help bypass the need for a turn 
+    * parameter for the event action.
+    * ---------------------------------------------------------------------- */
     private void StartEnemyTurnActions(int turn)
     {
         PerformNextAction();
@@ -71,11 +76,20 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: IncrementEnemyIndex
+    * Description: when called increments the enemy Index
+    * ---------------------------------------------------------------------- */
     public void IncrementEnemyIndex()
     {
         currentIndex++;
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: RemoveEnemyFromList
+    * Description: When called deletes teh enemies from list of enemies.
+    * Checks for win condition of all enemies gone.
+    * ---------------------------------------------------------------------- */
     private void RemoveEnemyFromList(EnemyData enemy)
     {
         enemies.Remove(enemy);

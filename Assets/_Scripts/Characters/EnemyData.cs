@@ -59,10 +59,15 @@ public class EnemyData : CharacterData
         if (path.Count == 0 && isMoving)
         {
             isMoving = false;
-            AttackCharactersInRange();
+            ShowTilesInAttackRange();
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: GetTilesInRangeForAttack
+    * Description: Starts the Artifical intelligence of the enemy Data when
+    * their turn starts.
+    * ---------------------------------------------------------------------- */
     public void PerformAction()
     {
         FindCharacterTarget();
@@ -88,6 +93,10 @@ public class EnemyData : CharacterData
         characterList.Clear();
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: ShowTilesInRange
+    * Description: Finds all tiles in range and highlights them
+    * ---------------------------------------------------------------------- */
     private void ShowTilesInRange()
     {
         rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(activeTile.gridLocation.x, activeTile.gridLocation.y), range);
@@ -97,6 +106,10 @@ public class EnemyData : CharacterData
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: ShowTilesInAttackRange
+    * Description: Finds all tiles in attack range and highlts them red.
+    * ---------------------------------------------------------------------- */
     private void ShowTilesInAttackRange()
     {
         rangeFinderTiles = rangeFinder.GetTilesInRangeForAttack(new Vector2Int(activeTile.gridLocation.x, activeTile.gridLocation.y), attackRange);
@@ -111,6 +124,11 @@ public class EnemyData : CharacterData
         StartCoroutine(DealDamage());
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: DealDamage
+    * Description: Create a buffer in between enemy movement and attack to get
+    * it to feel like a player.
+    * ---------------------------------------------------------------------- */
     private IEnumerator DealDamage()
     {
         yield return new WaitForSeconds(1f);
@@ -129,6 +147,10 @@ public class EnemyData : CharacterData
         StartCoroutine(FinishTurn());
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: FinishTurn
+    * Description: Ends current Enemy turn and goes to the next enemies turn.
+    * ---------------------------------------------------------------------- */
     private IEnumerator FinishTurn()
     {
         yield return new WaitForSeconds(.5f);
@@ -136,6 +158,11 @@ public class EnemyData : CharacterData
         enemyManager.PerformNextAction();
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: PlaceArrowsOnPath
+    * Description: Finds the best path to get to the target character.
+    * Places the arrow sprite along the path.
+    * ---------------------------------------------------------------------- */
     private void PlaceArrowsOnPath()
     {
         path = pathFinder.FindPath(activeTile, ReturnClosestTileInRangeToTarget(), rangeFinderTiles);
@@ -147,6 +174,11 @@ public class EnemyData : CharacterData
         StartCoroutine(PlaceArrowAfterTime());
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: PlaceArrowAfterTime
+    * Description: Simulate a small delay in between the arrows to emulate
+    * a player-like movement
+    * ---------------------------------------------------------------------- */
     private IEnumerator PlaceArrowAfterTime()
     {
         for (int i = 0; i < path.Count; i++)
@@ -167,6 +199,10 @@ public class EnemyData : CharacterData
         MoveAlongPath();
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: MoveAlongPath
+    * Description: Moves the enemy along the given path
+    * ---------------------------------------------------------------------- */
     private void MoveAlongPath()
     {
         isMoving = true;
@@ -192,11 +228,6 @@ public class EnemyData : CharacterData
         }
     }
 
-    private void AttackCharactersInRange()
-    {
-        ShowTilesInAttackRange();
-    }
-
     /* ------------------------------------------------------------------------
     * Function: ReturnClosestCharacter
     * Description: Returns the closest charaacter on the grid relative to the
@@ -218,6 +249,10 @@ public class EnemyData : CharacterData
         return listOfCharacters[minIndex];
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: ReturnClosestTileInRangeToTarget
+    * Description: Gets the closest tile in range to the target.
+    * ---------------------------------------------------------------------- */
     private OverlayTile ReturnClosestTileInRangeToTarget()
     {
         float minDistance = float.MaxValue;
@@ -234,6 +269,10 @@ public class EnemyData : CharacterData
         return rangeFinderTiles[minIndex];
     }
 
+    /* ------------------------------------------------------------------------
+    * Function: PositionOnTile
+    * Description: Handles the logic of placing the enemy on an active tile.
+    * ---------------------------------------------------------------------- */
     private void PositionOnTile(OverlayTile tile)
     {
         activeTile.isOccupied = false;
