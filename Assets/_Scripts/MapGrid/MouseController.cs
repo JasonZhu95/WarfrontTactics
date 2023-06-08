@@ -14,7 +14,7 @@ public class MouseController : MonoBehaviour
     [SerializeField] private GameObject cursor;
     [SerializeField] private float speed = 3;
     [SerializeField] private GameObject characterPrefab;
-    private CharacterData character;
+    public CharacterData SelectedCharacter { get; set; }
     private TurnManager turnManager;
 
     private PathFinder pathFinder;
@@ -84,14 +84,14 @@ public class MouseController : MonoBehaviour
                     if (overlayTile.isOccupied && !overlayTile.characterOnTile.isEnemy && !overlayTile.characterOnTile.attackedThisTurn)
                     {
                         // Check to see if we need to reselect the character
-                        if (character != null)
+                        if (SelectedCharacter != null)
                         {
                             characterIsSelected = false;
-                            character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
+                            SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
                         }
 
                         overlayTile.ShowTile();
-                        character = overlayTile.characterOnTile;
+                        SelectedCharacter = overlayTile.characterOnTile;
                         characterIsSelected = true;
                         if (!overlayTile.characterOnTile.movedThisTurn)
                         {
@@ -117,7 +117,7 @@ public class MouseController : MonoBehaviour
             }
 
             // Calculate the tiles in range when player isn't moving
-            if (path.Count == 0 && character != null)
+            if (path.Count == 0 && SelectedCharacter != null)
             {
                 isMoving = false;
             }
@@ -125,14 +125,14 @@ public class MouseController : MonoBehaviour
             if (moveAlongPathFinished)
             {
                 characterIsSelected = false;
-                character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
-                character = null;
+                SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
+                SelectedCharacter = null;
                 moveAlongPathFinished = false;
             }
 
-            if (character != null)
+            if (SelectedCharacter != null)
             {
-                character.GetComponent<SpriteRenderer>().sprite = character.selectedSprite;
+                SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.selectedSprite;
             }
         }
         else
@@ -150,12 +150,12 @@ public class MouseController : MonoBehaviour
     {
         if (overlayTile.characterOnTile != null)
         {
-            overlayTile.characterOnTile.TakeDamage(character.attack);
+            overlayTile.characterOnTile.TakeDamage(SelectedCharacter.attack);
         }
-        character.attackedThisTurn = true;
-        character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
-        character.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
-        character = null;
+        SelectedCharacter.attackedThisTurn = true;
+        SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
+        SelectedCharacter.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
+        SelectedCharacter = null;
         attackActivated = false;
         characterIsSelected = false;
     }
@@ -168,11 +168,11 @@ public class MouseController : MonoBehaviour
 
     private void DeselectUnit()
     {
-        if (character != null)
+        if (SelectedCharacter != null)
         {
             characterIsSelected = false;
-            character.GetComponent<SpriteRenderer>().sprite = character.originalSprite;
-            character = null;
+            SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
+            SelectedCharacter = null;
         }
         rangeFinderTiles.Clear();
         Debug.Log("Deselect logic");
@@ -188,7 +188,7 @@ public class MouseController : MonoBehaviour
         // Place Arrows along path for all tiles in range
         if (rangeFinderTiles.Contains(overlayTile) && characterIsSelected && !attackActivated && rangeFinderTiles.Count > 0)
         {
-            path = pathFinder.FindPath(character.activeTile, overlayTile, rangeFinderTiles);
+            path = pathFinder.FindPath(SelectedCharacter.activeTile, overlayTile, rangeFinderTiles);
 
             // Hide all arrows when player clicks to start moving
             foreach (OverlayTile tile in rangeFinderTiles)
@@ -199,7 +199,7 @@ public class MouseController : MonoBehaviour
             // Calculate the direction of the arrow and set sprite to visible
             for (int i = 0; i < path.Count; i++)
             {
-                OverlayTile previousTile = i > 0 ? path[i - 1] : character.activeTile;
+                OverlayTile previousTile = i > 0 ? path[i - 1] : SelectedCharacter.activeTile;
                 OverlayTile futureTile = i < path.Count - 1 ? path[i + 1] : null;
 
                 ArrowDirection arrowDir = arrowTranslator.TranslateDirection(previousTile, path[i], futureTile);
@@ -218,15 +218,15 @@ public class MouseController : MonoBehaviour
         float step = speed * Time.deltaTime;
 
         float zIndex = path[0].transform.position.z;
-        character.transform.position = Vector2.MoveTowards(character.transform.position, path[0].transform.position, step);
-        character.transform.position = new Vector3(character.transform.position.x, character.transform.position.y, zIndex);
+        SelectedCharacter.transform.position = Vector2.MoveTowards(SelectedCharacter.transform.position, path[0].transform.position, step);
+        SelectedCharacter.transform.position = new Vector3(SelectedCharacter.transform.position.x, SelectedCharacter.transform.position.y, zIndex);
 
         foreach (OverlayTile tile in rangeFinderTiles)
         {
             MapManager.Instance.map[tile.grid2DLocation].SetArrowSprite(ArrowDirection.None);
         }
 
-        if (Vector2.Distance(character.transform.position, path[0].transform.position) < 0.0001f)
+        if (Vector2.Distance(SelectedCharacter.transform.position, path[0].transform.position) < 0.0001f)
         {
             PositionCharacterOnTile(path[0]);
             path.RemoveAt(0);
@@ -265,7 +265,7 @@ public class MouseController : MonoBehaviour
     * ---------------------------------------------------------------------- */
     private void GetInRangeTiles()
     {
-        rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), character.range);
+        rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(SelectedCharacter.activeTile.gridLocation.x, SelectedCharacter.activeTile.gridLocation.y), SelectedCharacter.range);
         foreach (var item in rangeFinderTiles)
         {
             item.ShowTile();
@@ -279,13 +279,13 @@ public class MouseController : MonoBehaviour
     * ---------------------------------------------------------------------- */
     private void GetInAttackRangeTiles()
     {
-        rangeFinderTiles = rangeFinder.GetTilesInRangeForAttack(new Vector2Int(character.activeTile.gridLocation.x, character.activeTile.gridLocation.y), character.attackRange);
+        rangeFinderTiles = rangeFinder.GetTilesInRangeForAttack(new Vector2Int(SelectedCharacter.activeTile.gridLocation.x, SelectedCharacter.activeTile.gridLocation.y), SelectedCharacter.attackRange);
         foreach (var item in rangeFinderTiles)
         {
             item.ShowTileRed();
         }
 
-        character.activeTile.HideTile();
+        SelectedCharacter.activeTile.HideTile();
         attackActivated = true;
     }
 
@@ -297,14 +297,14 @@ public class MouseController : MonoBehaviour
     * ---------------------------------------------------------------------- */
     private void PositionCharacterOnTile(OverlayTile tile)
     {
-        character.activeTile.isOccupied = false;
-        character.activeTile.characterOnTile = null;
-        character.activeTile.isBlocked = false;
-        character.transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
-        character.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
-        character.GetComponent<CharacterData>().activeTile = tile;
-        character.movedThisTurn = true;
-        tile.characterOnTile = character;
+        SelectedCharacter.activeTile.isOccupied = false;
+        SelectedCharacter.activeTile.characterOnTile = null;
+        SelectedCharacter.activeTile.isBlocked = false;
+        SelectedCharacter.transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.0001f, tile.transform.position.z);
+        SelectedCharacter.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
+        SelectedCharacter.GetComponent<CharacterData>().activeTile = tile;
+        SelectedCharacter.movedThisTurn = true;
+        tile.characterOnTile = SelectedCharacter;
         tile.isOccupied = true;
         tile.isBlocked = true;
     }
