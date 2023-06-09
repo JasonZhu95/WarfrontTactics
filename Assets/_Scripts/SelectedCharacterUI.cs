@@ -15,6 +15,7 @@ public class SelectedCharacterUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI healthText;
     [SerializeField] private TextMeshProUGUI attackText;
     [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private TextMeshProUGUI rangeText;
 
     private void Start()
     {
@@ -36,8 +37,9 @@ public class SelectedCharacterUI : MonoBehaviour
         {
             gameObject.SetActive(true);
             healthText.text = ":" + mouseController.SelectedCharacter.currentHealth.ToString() + "/" + mouseController.SelectedCharacter.maxHealth.ToString();
-            attackText.text = mouseController.SelectedCharacter.attack.ToString();
+            attackText.text = ":" + mouseController.SelectedCharacter.attack.ToString();
             nameText.text = mouseController.SelectedCharacter.characterName;
+            rangeText.text = ":" + mouseController.SelectedCharacter.attackRange.ToString();
             characterPortrait.sprite = mouseController.SelectedCharacter.GetComponent<SpriteRenderer>().sprite;
         }
     }

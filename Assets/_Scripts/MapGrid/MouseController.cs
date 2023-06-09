@@ -154,6 +154,24 @@ public class MouseController : MonoBehaviour
         if (overlayTile.characterOnTile != null)
         {
             overlayTile.characterOnTile.TakeDamage(SelectedCharacter.attack);
+
+            //Play corresponding sound based on weapon type
+            switch (SelectedCharacter.attackRange)
+            {
+                case 1:
+                    SoundManager.instance.Play("Sword");
+                    break;
+                case 2:
+                    SoundManager.instance.Play("Spear");
+                    break;
+                case 3:
+                    SoundManager.instance.Play("Bow");
+                    break;
+                default:
+                    SoundManager.instance.Play("Sword");
+                    break;
+
+            }
         }
         SelectedCharacter.attackedThisTurn = true;
         SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
@@ -176,6 +194,7 @@ public class MouseController : MonoBehaviour
             characterIsSelected = false;
             SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
             SetSelectedCharacter(null);
+            SoundManager.instance.Play("CharacterSelectedError");
         }
         rangeFinderTiles.Clear();
     }
@@ -230,6 +249,7 @@ public class MouseController : MonoBehaviour
 
         if (Vector2.Distance(SelectedCharacter.transform.position, path[0].transform.position) < 0.0001f)
         {
+            SoundManager.instance.Play("Footstep");
             PositionCharacterOnTile(path[0]);
             path.RemoveAt(0);
         }
@@ -319,6 +339,10 @@ public class MouseController : MonoBehaviour
     private void SetSelectedCharacter(CharacterData character)
     {
         SelectedCharacter = character;
+        if (SelectedCharacter != null)
+        {
+            SoundManager.instance.Play("CharacterSelected");
+        }
         OnCharacterSelect?.Invoke();
     }
 }

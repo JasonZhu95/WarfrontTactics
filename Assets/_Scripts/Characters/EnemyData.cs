@@ -139,6 +139,22 @@ public class EnemyData : CharacterData
         }
         if (charactersInRange.Count > 0)
         {
+            switch (attackRange)
+            {
+                case 1:
+                    SoundManager.instance.Play("Sword");
+                    break;
+                case 2:
+                    SoundManager.instance.Play("Spear");
+                    break;
+                case 3:
+                    SoundManager.instance.Play("Bow");
+                    break;
+                default:
+                    SoundManager.instance.Play("Sword");
+                    break;
+            }
+
             int randomIndex = UnityEngine.Random.Range(0, charactersInRange.Count);
             charactersInRange[randomIndex].TakeDamage(attack);
             charactersInRange.Clear();

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /* ----------------------------------------------------------------------------
  * Class: TurnManager
@@ -14,6 +15,7 @@ public class TurnManager : MonoBehaviour
     public static event TurnChangedHandler OnPlayerTurnChanged;
 
     [SerializeField] private MouseController mouseController;
+    [SerializeField] private Button endTurnButton;
     public int currentTurn = 1;
 
     private void Start()
@@ -25,9 +27,13 @@ public class TurnManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !mouseController.isMoving)
+        if (currentTurn % 2 == 0 || mouseController.isMoving || mouseController.SelectedCharacter != null)
         {
-            EndTurn();
+            endTurnButton.interactable = false;
+        }
+        else
+        {
+            endTurnButton.interactable = true;
         }
     }
 

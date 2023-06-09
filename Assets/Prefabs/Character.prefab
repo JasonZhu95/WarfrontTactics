@@ -201,16 +201,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeTile: {fileID: 0}
-  spawningTileLocation: {x: -5, y: 0}
+  spawningTileLocation: {x: -6, y: -1}
   originalSprite: {fileID: -804329060, guid: 80e85988b4d5a4b4fb38109477f1cd81, type: 3}
   selectedSprite: {fileID: 832581339, guid: 71d2823f553f30449be568457f14656d, type: 3}
   isEnemy: 0
-  attack: 10
-  defense: 0
+  attack: 3
   range: 3
   attackRange: 1
-  currentHealth: 10
-  maxHealth: 10
+  currentHealth: 12
+  maxHealth: 12
   characterName: Jason
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 7771008121818669349}

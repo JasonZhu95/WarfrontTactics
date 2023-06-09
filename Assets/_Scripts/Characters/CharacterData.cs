@@ -17,7 +17,6 @@ public class CharacterData : MonoBehaviour
     public Sprite selectedSprite;
     public bool isEnemy;
     public int attack;
-    public int defense;
     public int range;
     public int attackRange;
 
