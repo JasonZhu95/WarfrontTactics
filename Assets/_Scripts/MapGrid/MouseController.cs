@@ -51,6 +51,14 @@ public class MouseController : MonoBehaviour
             focusedTileHit = GetFocusedOnTile();
             // Move the mouse cursor where the overlay tile is selected.
             // Show the overlay tile on mouse press
+            if (!focusedTileHit.HasValue)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    DeselectUnit();
+                }
+            }
+
             if (focusedTileHit.HasValue && !isMoving)
             {
                 OverlayTile overlayTile = focusedTileHit.Value.collider.gameObject.GetComponent<OverlayTile>();
@@ -78,6 +86,7 @@ public class MouseController : MonoBehaviour
                 // Get the selected tile on Mouse Button Down
                 if (Input.GetMouseButtonDown(0))
                 {
+
                     if (characterIsSelected && rangeFinderTiles.Contains(overlayTile) && !attackActivated)
                     {
                         isMoving = true;
@@ -109,6 +118,16 @@ public class MouseController : MonoBehaviour
                     else if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
                     {
                         DeselectUnit();
+                    }
+
+                    if (characterIsSelected && isMoving && overlayTile == SelectedCharacter.activeTile)
+                    {
+                        PositionCharacterOnTile(overlayTile);
+                        moveAlongPathFinished = true;
+                        foreach(var tile in rangeFinderTiles)
+                        {
+                            tile.HideTile();
+                        }
                     }
                 }
             }
@@ -253,6 +272,7 @@ public class MouseController : MonoBehaviour
             PositionCharacterOnTile(path[0]);
             path.RemoveAt(0);
         }
+
         if (path.Count == 0)
         {
             moveAlongPathFinished = true;
@@ -302,6 +322,7 @@ public class MouseController : MonoBehaviour
     private void GetInAttackRangeTiles()
     {
         rangeFinderTiles = rangeFinder.GetTilesInRangeForAttack(new Vector2Int(SelectedCharacter.activeTile.gridLocation.x, SelectedCharacter.activeTile.gridLocation.y), SelectedCharacter.attackRange);
+        rangeFinderTiles.Remove(SelectedCharacter.activeTile);
         foreach (var item in rangeFinderTiles)
         {
             item.ShowTileRed();

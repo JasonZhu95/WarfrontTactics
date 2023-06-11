@@ -70,9 +70,22 @@ public class EnemyData : CharacterData
     * ---------------------------------------------------------------------- */
     public void PerformAction()
     {
+        SetSelectedSprite(true);
         FindCharacterTarget();
         ShowTilesInRange();
         PlaceArrowsOnPath();
+    }
+
+    private void SetSelectedSprite(bool selected)
+    {
+        if (selected)
+        {
+            gameObject.GetComponent<SpriteRenderer>().sprite = selectedSprite;
+        }
+        else
+        {
+            gameObject.GetComponent<SpriteRenderer>().sprite = originalSprite;
+        }
     }
 
     /* ------------------------------------------------------------------------
@@ -159,7 +172,7 @@ public class EnemyData : CharacterData
             charactersInRange[randomIndex].TakeDamage(attack);
             charactersInRange.Clear();
         }
-
+        SetSelectedSprite(false);
         StartCoroutine(FinishTurn());
     }
 
@@ -275,14 +288,27 @@ public class EnemyData : CharacterData
         int minIndex = 0;
         for (int i = 0; i < rangeFinderTiles.Count; i++)
         {
-            float distance = Vector2Int.Distance(target.activeTile.grid2DLocation, rangeFinderTiles[i].grid2DLocation);
-            if (distance < minDistance)
+            if (!rangeFinderTiles[i].isOccupied || rangeFinderTiles[i].characterOnTile == this)
             {
-                minDistance = distance;
-                minIndex = i;
+                float distance = GetManhattanDistance(target.activeTile.grid2DLocation, rangeFinderTiles[i].grid2DLocation);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    minIndex = i;
+                }
             }
         }
         return rangeFinderTiles[minIndex];
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: GetManhattanDistance
+    * Description: Takes in a starting node and a neighbour node. Calculates
+    * the Manhattan Distance (Distance between nodes ignoring the diagonal)
+    * ---------------------------------------------------------------------- */
+    private float GetManhattanDistance(Vector2Int point1, Vector2Int point2)
+    {
+        return Mathf.Abs(point1.x - point2.x) + Mathf.Abs(point1.y - point2.y);
     }
 
     /* ------------------------------------------------------------------------

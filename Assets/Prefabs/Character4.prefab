@@ -210,7 +210,7 @@ MonoBehaviour:
   attackRange: 2
   currentHealth: 8
   maxHealth: 8
-  characterName: Joshua
+  characterName: Johnny
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 5461704214010665792}
   movedThisTurn: 0

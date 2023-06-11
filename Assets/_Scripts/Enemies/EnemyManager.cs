@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     [SerializeField] private Transform enemyHolder;
+    [SerializeField] private GameObject LevelCompletedCanvas;
     private TurnManager turnManager;
     public List<EnemyData> enemies;
     public int currentIndex = 0;
@@ -95,8 +96,13 @@ public class EnemyManager : MonoBehaviour
         enemies.Remove(enemy);
         if (enemies.Count == 0)
         {
-            //TODO: ADD GAME WIN LOGIC
-            Debug.Log("All Enemies have been destroyed");
+            StartCoroutine(StartLevelCompletedCanvas());
         }
+    }
+
+    private IEnumerator StartLevelCompletedCanvas()
+    {
+        yield return new WaitForSeconds(0.5f);
+        LevelCompletedCanvas.SetActive(true);
     }
 }
