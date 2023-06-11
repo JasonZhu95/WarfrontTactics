@@ -26,6 +26,7 @@ public class EnemyData : CharacterData
 
     private void Start()
     {
+        anim = GetComponent<Animator>();
         characterList = new List<CharacterData>();
         mouseController = GameObject.Find("MouseController").GetComponent<MouseController>();
         enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
@@ -40,9 +41,8 @@ public class EnemyData : CharacterData
 
     private void OnEnable()
     {
-        TurnManager.OnEnemyTurnChanged -= OnPlayerTurnChanged;
-        TurnManager.OnPlayerTurnChanged += OnPlayerTurnStarted;
         OnCharacterDeath += FindCharacterTarget;
+        TurnManager.OnPlayerTurnChanged += OnPlayerTurnChanged;
     }
 
     private void OnDisable()
@@ -62,15 +62,6 @@ public class EnemyData : CharacterData
             isMoving = false;
             ShowTilesInAttackRange();
         }
-    }
-
-    /* ------------------------------------------------------------------------
-    * Function: OnPlayerTurnChanged
-    * Description: Takes care of the logic when the player turn is beginning
-    * ---------------------------------------------------------------------- */
-    private void OnPlayerTurnStarted(int currentTurn)
-    {
-        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
     }
 
     /* ------------------------------------------------------------------------
@@ -126,6 +117,7 @@ public class EnemyData : CharacterData
     * ---------------------------------------------------------------------- */
     private void ShowTilesInRange()
     {
+        SoundManager.instance.Play("CharacterSelected");
         rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(activeTile.gridLocation.x, activeTile.gridLocation.y), range);
         foreach(var item in rangeFinderTiles)
         {
@@ -201,7 +193,7 @@ public class EnemyData : CharacterData
     private IEnumerator AttackAnimation()
     {
         anim.SetBool("attack", true);
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
         anim.SetBool("attack", false);
         SetSelectedSprite(false);
         StartCoroutine(FinishTurn());

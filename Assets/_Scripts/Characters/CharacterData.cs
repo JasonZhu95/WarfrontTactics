@@ -32,20 +32,14 @@ public class CharacterData : MonoBehaviour
     public static event Action<EnemyData> OnEnemyDeath;
     public static event Action OnCharacterDeath;
 
-    private void OnEnable()
-    {
-        TurnManager.OnEnemyTurnChanged += OnPlayerTurnChanged;
-    }
-
-    private void OnDisable()
-    {
-        TurnManager.OnPlayerTurnChanged -= OnPlayerTurnChanged;
-    }
-
     private void Start()
     {
         currentHealth = maxHealth;
         anim = GetComponent<Animator>();
+        if (!isEnemy)
+        {
+            TurnManager.OnEnemyTurnChanged += OnPlayerTurnChanged;
+        }
     }
 
     /* ------------------------------------------------------------------------
@@ -71,9 +65,11 @@ public class CharacterData : MonoBehaviour
             if (isEnemy)
             {
                 OnEnemyDeath?.Invoke((EnemyData)this);
+                TurnManager.OnPlayerTurnChanged -= OnPlayerTurnChanged;
             }
             else
             {
+                TurnManager.OnEnemyTurnChanged -= OnPlayerTurnChanged;
                 OnCharacterDeath?.Invoke();
             }
             Destroy(gameObject);

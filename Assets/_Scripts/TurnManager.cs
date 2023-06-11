@@ -50,6 +50,7 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
+            PrintAttachedMethods();
             OnPlayerTurnChanged?.Invoke(turn);
         }
     }
@@ -62,6 +63,24 @@ public class TurnManager : MonoBehaviour
     {
         currentTurn++;
         StartTurn(currentTurn);
+    }
+
+    private void PrintAttachedMethods()
+    {
+        if (OnPlayerTurnChanged != null)
+        {
+            Delegate[] invocationList = OnPlayerTurnChanged.GetInvocationList();
+            Debug.Log("Attached Methods:");
+
+            foreach (Delegate method in invocationList)
+            {
+                Debug.Log("- " + method.Method.Name);
+            }
+        }
+        else
+        {
+            Debug.Log("No methods attached to the event.");
+        }
     }
 
 }
