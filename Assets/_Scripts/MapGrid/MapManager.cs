@@ -17,6 +17,8 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] private GameObject overlayTilePrefab;
     [SerializeField] private GameObject overlayContainer;
+    [SerializeField] private BlockedTilesListSO blockedTiles;
+    private HashSet<Sprite> blockedTileSet;
 
     public Dictionary<Vector2Int, OverlayTile> map;
     public bool ignoreBottomTiles;
@@ -37,6 +39,7 @@ public class MapManager : MonoBehaviour
     {
         IOrderedEnumerable<Tilemap> tileMaps = gameObject.GetComponentsInChildren<Tilemap>().OrderByDescending(x => x.GetComponent<TilemapRenderer>().sortingOrder);
         map = new Dictionary<Vector2Int, OverlayTile>();
+        blockedTileSet = new HashSet<Sprite>(blockedTiles.blockedTileSprites);
 
         foreach (var tm in tileMaps)
         {
@@ -64,6 +67,13 @@ public class MapManager : MonoBehaviour
                                 overlayTile.GetComponent<SpriteRenderer>().sortingOrder = tm.GetComponent<TilemapRenderer>().sortingOrder;
                                 overlayTile.gameObject.GetComponent<OverlayTile>().gridLocation = new Vector3Int(x, y, z);
                                 overlayTile.gameObject.GetComponent<OverlayTile>().SetArrowSprite(ArrowDirection.None);
+
+                                // Check if the tile needs to be blocked based off sprite data.
+                                Sprite sprite = tm.GetSprite(new Vector3Int(x, y, z));
+                                if (blockedTileSet.Contains(sprite))
+                                {
+                                    overlayTile.gameObject.GetComponent<OverlayTile>().isBlocked = true;
+                                }
 
                                 map.Add(new Vector2Int(x, y), overlayTile.gameObject.GetComponent<OverlayTile>());
                             }

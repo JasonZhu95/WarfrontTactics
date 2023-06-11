@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 1401805595357804127}
   - component: {fileID: 1401805595357804126}
   - component: {fileID: 1401805595357804125}
+  - component: {fileID: -4191567280449290402}
   m_Layer: 0
   m_Name: Character4
   m_TagString: Untagged
@@ -201,7 +202,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeTile: {fileID: 0}
-  spawningTileLocation: {x: -7, y: 1}
   originalSprite: {fileID: -964274052, guid: 80e85988b4d5a4b4fb38109477f1cd81, type: 3}
   selectedSprite: {fileID: 463770576, guid: 71d2823f553f30449be568457f14656d, type: 3}
   isEnemy: 0
@@ -215,6 +215,27 @@ MonoBehaviour:
   damageText: {fileID: 5461704214010665792}
   movedThisTurn: 0
   attackedThisTurn: 0
+--- !u!95 &-4191567280449290402
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401805595357804124}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 68459142f25a8ba4d97afca6d5cc0527, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4657251345797708249
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,7 +348,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -49.001324}
-  m_SizeDelta: {x: 500, y: 100}
+  m_SizeDelta: {x: 1000, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4521638392595862559
 CanvasRenderer:

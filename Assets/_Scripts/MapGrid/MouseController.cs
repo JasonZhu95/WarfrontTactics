@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using static ArrowTranslator;
 using System;
+using System.Collections;
 
 /* ----------------------------------------------------------------------------
  * Class: MouseController
@@ -28,6 +29,7 @@ public class MouseController : MonoBehaviour
     private bool characterIsSelected = false;
     private bool attackActivated = false;
     private RaycastHit2D? focusedTileHit;
+    private bool mouseInputEnabled = true;
 
     public event Action OnCharacterSelect;
 
@@ -53,7 +55,7 @@ public class MouseController : MonoBehaviour
             // Show the overlay tile on mouse press
             if (!focusedTileHit.HasValue)
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && mouseInputEnabled)
                 {
                     DeselectUnit();
                 }
@@ -70,7 +72,7 @@ public class MouseController : MonoBehaviour
                 //Attack the enemy on click
                 if (attackActivated && rangeFinderTiles.Contains(overlayTile) && characterIsSelected)
                 {
-                    if (Input.GetMouseButtonDown(0))
+                    if (Input.GetMouseButtonDown(0) && mouseInputEnabled)
                     {
                         if (!rangeFinderTiles.Contains(overlayTile) && !isMoving)
                         {
@@ -84,7 +86,7 @@ public class MouseController : MonoBehaviour
                 }
 
                 // Get the selected tile on Mouse Button Down
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && mouseInputEnabled)
                 {
 
                     if (characterIsSelected && rangeFinderTiles.Contains(overlayTile) && !attackActivated)
@@ -151,11 +153,6 @@ public class MouseController : MonoBehaviour
                 SetSelectedCharacter(null);
                 moveAlongPathFinished = false;
             }
-
-            if (SelectedCharacter != null)
-            {
-                SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.selectedSprite;
-            }
         }
         else
         {
@@ -172,6 +169,7 @@ public class MouseController : MonoBehaviour
     {
         if (overlayTile.characterOnTile != null)
         {
+            StartCoroutine(StartAttackAnimation());
             overlayTile.characterOnTile.TakeDamage(SelectedCharacter.attack);
 
             //Play corresponding sound based on weapon type
@@ -189,9 +187,30 @@ public class MouseController : MonoBehaviour
                 default:
                     SoundManager.instance.Play("Sword");
                     break;
-
             }
         }
+        else
+        {
+            SelectedCharacter.attackedThisTurn = true;
+            SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
+            SelectedCharacter.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
+            SetSelectedCharacter(null);
+            attackActivated = false;
+            characterIsSelected = false;
+        }
+    }
+
+    /* ------------------------------------------------------------------------
+    * Coroutine: StartAttackAnimation
+    * Description: Starts attack animation
+    * ---------------------------------------------------------------------- */
+    private IEnumerator StartAttackAnimation()
+    {
+        SelectedCharacter.anim.SetBool("attack", true);
+        DisableMouseInput();
+        yield return new WaitForSeconds(1f);
+        EnableMouseInput();
+        SelectedCharacter.anim.SetBool("attack", false);
         SelectedCharacter.attackedThisTurn = true;
         SelectedCharacter.GetComponent<SpriteRenderer>().sprite = SelectedCharacter.originalSprite;
         SelectedCharacter.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
@@ -201,11 +220,9 @@ public class MouseController : MonoBehaviour
     }
 
     /* ------------------------------------------------------------------------
-    * Function: AttackEnemyOnClick
-    * Description: Handles attack logic when called.  Takes in the selected
-    * overlay tile.
+    * Function: Deselect Unity
+    * Description: Handles logic when deselecting a unit
     * ---------------------------------------------------------------------- */
-
     private void DeselectUnit()
     {
         if (SelectedCharacter != null)
@@ -359,11 +376,26 @@ public class MouseController : MonoBehaviour
     * ---------------------------------------------------------------------- */
     private void SetSelectedCharacter(CharacterData character)
     {
+        if (character == null && SelectedCharacter != null)
+        {
+            SelectedCharacter.anim.SetBool("selected", false);
+        }
         SelectedCharacter = character;
         if (SelectedCharacter != null)
         {
             SoundManager.instance.Play("CharacterSelected");
+            SelectedCharacter.anim.SetBool("selected", true);
         }
         OnCharacterSelect?.Invoke();
+    }
+
+    private void DisableMouseInput()
+    {
+        mouseInputEnabled = false;
+    }
+
+    private void EnableMouseInput()
+    {
+        mouseInputEnabled = true;
     }
 }

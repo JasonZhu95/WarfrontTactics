@@ -12,7 +12,6 @@ using UnityEngine.UI;
 public class CharacterData : MonoBehaviour
 {
     public OverlayTile activeTile;
-    public Vector2Int spawningTileLocation;
     public Sprite originalSprite;
     public Sprite selectedSprite;
     public bool isEnemy;
@@ -25,6 +24,7 @@ public class CharacterData : MonoBehaviour
     public string characterName;
     [SerializeField] private Image healthBarImage;
     [SerializeField] private TextMeshProUGUI damageText;
+    [HideInInspector] public Animator anim;
 
     public bool movedThisTurn;
     public bool attackedThisTurn;
@@ -34,7 +34,7 @@ public class CharacterData : MonoBehaviour
 
     private void OnEnable()
     {
-        TurnManager.OnPlayerTurnChanged += OnPlayerTurnChanged;        
+        TurnManager.OnEnemyTurnChanged += OnPlayerTurnChanged;
     }
 
     private void OnDisable()
@@ -45,6 +45,7 @@ public class CharacterData : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
+        anim = GetComponent<Animator>();
     }
 
     /* ------------------------------------------------------------------------

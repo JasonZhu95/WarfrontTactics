@@ -11,6 +11,7 @@ public class CharacterSpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] characterPrefabs;
     [SerializeField] private GameObject characterHolder;
     [SerializeField] private GameObject enemyHolder;
+    [SerializeField] private List<Vector2Int> spawningTileLocations;
     private GameObject character;
 
     private void Start()
@@ -25,7 +26,7 @@ public class CharacterSpawnManager : MonoBehaviour
             {
                 character = Instantiate(characterPrefabs[i], characterHolder.transform);
             }
-            Vector2Int locationToSpawn = character.GetComponent<CharacterData>().spawningTileLocation;
+            Vector2Int locationToSpawn = spawningTileLocations[i];
             if (MapManager.Instance.map.ContainsKey(locationToSpawn))
             {
                 PositionCharacterOnTile(MapManager.Instance.map[locationToSpawn], character);

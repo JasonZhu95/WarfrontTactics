@@ -40,7 +40,8 @@ public class EnemyData : CharacterData
 
     private void OnEnable()
     {
-        TurnManager.OnPlayerTurnChanged -= OnPlayerTurnChanged;
+        TurnManager.OnEnemyTurnChanged -= OnPlayerTurnChanged;
+        TurnManager.OnPlayerTurnChanged += OnPlayerTurnStarted;
         OnCharacterDeath += FindCharacterTarget;
     }
 
@@ -64,6 +65,15 @@ public class EnemyData : CharacterData
     }
 
     /* ------------------------------------------------------------------------
+    * Function: OnPlayerTurnChanged
+    * Description: Takes care of the logic when the player turn is beginning
+    * ---------------------------------------------------------------------- */
+    private void OnPlayerTurnStarted(int currentTurn)
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+    }
+
+    /* ------------------------------------------------------------------------
     * Function: GetTilesInRangeForAttack
     * Description: Starts the Artifical intelligence of the enemy Data when
     * their turn starts.
@@ -81,10 +91,14 @@ public class EnemyData : CharacterData
         if (selected)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = selectedSprite;
+            anim.SetBool("selected", true);
+
         }
         else
         {
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
             gameObject.GetComponent<SpriteRenderer>().sprite = originalSprite;
+            anim.SetBool("selected", false);
         }
     }
 
@@ -169,9 +183,26 @@ public class EnemyData : CharacterData
             }
 
             int randomIndex = UnityEngine.Random.Range(0, charactersInRange.Count);
+            StartCoroutine(AttackAnimation());
             charactersInRange[randomIndex].TakeDamage(attack);
             charactersInRange.Clear();
         }
+        else
+        {
+            SetSelectedSprite(false);
+            StartCoroutine(FinishTurn());
+        }
+    }
+
+    /* ------------------------------------------------------------------------
+    * Function: FinishTurn
+    * Description: Ends current Enemy turn and goes to the next enemies turn.
+    * ---------------------------------------------------------------------- */
+    private IEnumerator AttackAnimation()
+    {
+        anim.SetBool("attack", true);
+        yield return new WaitForSeconds(.5f);
+        anim.SetBool("attack", false);
         SetSelectedSprite(false);
         StartCoroutine(FinishTurn());
     }
