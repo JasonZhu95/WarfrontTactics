@@ -716,6 +716,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: IsometricTRPGAssetPack_OutlinedEntities_28
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 275
+        width: 9
+        height: 11
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ee4ee2b3a37a334eb0927d99e4197e0
+      internalID: 1165785204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IsometricTRPGAssetPack_OutlinedEntities_29
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 275
+        width: 9
+        height: 12
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25ba4363f54229141b8a6f45f3307d4c
+      internalID: -1510785025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IsometricTRPGAssetPack_OutlinedEntities_30
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 275
+        width: 8
+        height: 12
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9b75e448beb50240b71e40116dca8c3
+      internalID: -211447803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IsometricTRPGAssetPack_OutlinedEntities_31
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 275
+        width: 12
+        height: 11
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36006969a1f4aae44b5b2bdf10bde985
+      internalID: 1114147560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -748,7 +832,11 @@ TextureImporter:
       IsometricTRPGAssetPack_OutlinedEntities_25: -1695804951
       IsometricTRPGAssetPack_OutlinedEntities_26: 1278879921
       IsometricTRPGAssetPack_OutlinedEntities_27: -774029562
+      IsometricTRPGAssetPack_OutlinedEntities_28: 1165785204
+      IsometricTRPGAssetPack_OutlinedEntities_29: -1510785025
       IsometricTRPGAssetPack_OutlinedEntities_3: 1491168623
+      IsometricTRPGAssetPack_OutlinedEntities_30: -211447803
+      IsometricTRPGAssetPack_OutlinedEntities_31: 1114147560
       IsometricTRPGAssetPack_OutlinedEntities_4: -1582132546
       IsometricTRPGAssetPack_OutlinedEntities_5: -1289625586
       IsometricTRPGAssetPack_OutlinedEntities_6: -1882752338

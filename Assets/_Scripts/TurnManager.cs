@@ -18,10 +18,13 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private Button endTurnButton;
     public int currentTurn = 1;
 
+    [SerializeField] private Animator turnCanvasAnim;
+
     private void Start()
     {
         StartTurn(currentTurn);
 
+        SceneLoader.OnChangeScene += UnsubscribeMethods;
         //ENEMY Turns are even
     }
 
@@ -37,6 +40,12 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    private void UnsubscribeMethods()
+    {
+        OnEnemyTurnChanged = null;
+        OnPlayerTurnChanged = null;
+    }
+
     /* ------------------------------------------------------------------------
     * Function: StartTurn
     * Description: Starts the next turn and checks if it is a player turn
@@ -46,13 +55,28 @@ public class TurnManager : MonoBehaviour
     {
         if (turn % 2 == 0)
         {
-            OnEnemyTurnChanged?.Invoke(turn);
+            StartCoroutine(InvokeOnEnemyTurnChanged(turn));
         }
         else
         {
-            PrintAttachedMethods();
-            OnPlayerTurnChanged?.Invoke(turn);
+            StartCoroutine(InvokeOnPlayerTurnChanged(turn));
         }
+    }
+
+    private IEnumerator InvokeOnEnemyTurnChanged(int turn)
+    {
+        turnCanvasAnim.SetBool("enemy", true);
+        yield return new WaitForSeconds(2f);
+        turnCanvasAnim.SetBool("enemy", false);
+        OnEnemyTurnChanged?.Invoke(turn);
+    }
+
+    private IEnumerator InvokeOnPlayerTurnChanged(int turn)
+    {
+        turnCanvasAnim.SetBool("player", true);
+        yield return new WaitForSeconds(2f);
+        turnCanvasAnim.SetBool("player", false);
+        OnPlayerTurnChanged?.Invoke(turn);
     }
 
     /* ------------------------------------------------------------------------
@@ -63,24 +87,6 @@ public class TurnManager : MonoBehaviour
     {
         currentTurn++;
         StartTurn(currentTurn);
-    }
-
-    private void PrintAttachedMethods()
-    {
-        if (OnPlayerTurnChanged != null)
-        {
-            Delegate[] invocationList = OnPlayerTurnChanged.GetInvocationList();
-            Debug.Log("Attached Methods:");
-
-            foreach (Delegate method in invocationList)
-            {
-                Debug.Log("- " + method.Method.Name);
-            }
-        }
-        else
-        {
-            Debug.Log("No methods attached to the event.");
-        }
     }
 
 }

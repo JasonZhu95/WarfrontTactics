@@ -206,13 +206,14 @@ MonoBehaviour:
   selectedSprite: {fileID: 832581339, guid: 71d2823f553f30449be568457f14656d, type: 3}
   isEnemy: 0
   attack: 3
-  range: 3
+  range: 2
   attackRange: 1
   currentHealth: 12
   maxHealth: 12
   characterName: Jeffrey
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 6862442386782530319}
+  anim: {fileID: 0}
   movedThisTurn: 0
   attackedThisTurn: 0
 --- !u!95 &3646511025712645814

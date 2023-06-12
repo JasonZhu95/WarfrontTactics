@@ -213,6 +213,7 @@ MonoBehaviour:
   characterName: Johnny
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 5461704214010665792}
+  anim: {fileID: 0}
   movedThisTurn: 0
   attackedThisTurn: 0
 --- !u!95 &-4191567280449290402

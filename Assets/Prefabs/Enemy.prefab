@@ -179,7 +179,7 @@ MonoBehaviour:
   originalSprite: {fileID: 1458899342, guid: 80e85988b4d5a4b4fb38109477f1cd81, type: 3}
   selectedSprite: {fileID: 552281913, guid: 71d2823f553f30449be568457f14656d, type: 3}
   isEnemy: 1
-  attack: 3
+  attack: 2
   range: 3
   attackRange: 1
   currentHealth: 10
@@ -187,6 +187,7 @@ MonoBehaviour:
   characterName: 
   healthBarImage: {fileID: 1814116539315151356}
   damageText: {fileID: 6838214591508663857}
+  anim: {fileID: 0}
   movedThisTurn: 0
   attackedThisTurn: 0
   mouseController: {fileID: 0}

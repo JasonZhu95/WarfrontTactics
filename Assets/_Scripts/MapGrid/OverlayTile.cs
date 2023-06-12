@@ -18,6 +18,7 @@ public class OverlayTile : MonoBehaviour
 
     public bool isBlocked = false;
     public bool isOccupied = false;
+    private bool isEnemyTurn = true;
     public CharacterData characterOnTile;
 
     public OverlayTile previousTile { get; set; }
@@ -26,9 +27,15 @@ public class OverlayTile : MonoBehaviour
 
     public List<Sprite> arrows;
 
+    private void Start()
+    {
+        TurnManager.OnEnemyTurnChanged += SetEnemyTurn;
+        TurnManager.OnPlayerTurnChanged += SetEnemyTurnFalse;
+    }
+
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isEnemyTurn)
         {
             HideTile();
         }
@@ -80,5 +87,15 @@ public class OverlayTile : MonoBehaviour
             arrow.sprite = arrows[(int)d];
             arrow.sortingOrder = GetComponent<SpriteRenderer>().sortingOrder + 1;
         }
+    }
+
+    private void SetEnemyTurn(int currentTurn)
+    {
+        isEnemyTurn = true;
+    }
+
+    private void SetEnemyTurnFalse(int currentTurn)
+    {
+        isEnemyTurn = false;
     }
 }

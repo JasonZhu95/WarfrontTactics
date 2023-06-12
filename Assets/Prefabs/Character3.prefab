@@ -205,7 +205,7 @@ MonoBehaviour:
   originalSprite: {fileID: 676212954, guid: 80e85988b4d5a4b4fb38109477f1cd81, type: 3}
   selectedSprite: {fileID: -1781513730, guid: 71d2823f553f30449be568457f14656d, type: 3}
   isEnemy: 0
-  attack: 1
+  attack: 2
   range: 3
   attackRange: 3
   currentHealth: 6
@@ -213,6 +213,7 @@ MonoBehaviour:
   characterName: Joshua
   healthBarImage: {fileID: 662879314992264074}
   damageText: {fileID: 5461704214010665792}
+  anim: {fileID: 0}
   movedThisTurn: 0
   attackedThisTurn: 0
 --- !u!95 &3008844455422456954

@@ -716,6 +716,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: IsometricTRPGAssetPack_Entities_28
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 276
+        width: 7
+        height: 8
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36b7009523aff2045925b86f3461a33c
+      internalID: 480321943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IsometricTRPGAssetPack_Entities_29
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 276
+        width: 8
+        height: 9
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 706fca69568f78047a6f33bce99cf23f
+      internalID: -1966905325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -748,7 +790,11 @@ TextureImporter:
       IsometricTRPGAssetPack_Entities_25: -107235564
       IsometricTRPGAssetPack_Entities_26: 1442081723
       IsometricTRPGAssetPack_Entities_27: -1515492424
+      IsometricTRPGAssetPack_Entities_28: 480321943
+      IsometricTRPGAssetPack_Entities_29: -1966905325
       IsometricTRPGAssetPack_Entities_3: -1799649758
+      IsometricTRPGAssetPack_Entities_30: -1401870980
+      IsometricTRPGAssetPack_Entities_31: -960391006
       IsometricTRPGAssetPack_Entities_4: 50399198
       IsometricTRPGAssetPack_Entities_5: 46977948
       IsometricTRPGAssetPack_Entities_6: -979861431
