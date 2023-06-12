@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2061518950, guid: 6d6b780c6f375c04dbcfb63b036538fc, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1487079959}
     - target: {fileID: 5846438177820187719, guid: 6d6b780c6f375c04dbcfb63b036538fc, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -344,6 +348,7 @@ GameObject:
   - component: {fileID: 275268598}
   - component: {fileID: 275268597}
   - component: {fileID: 275268596}
+  - component: {fileID: 275268599}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -428,8 +433,8 @@ MonoBehaviour:
           m_StringArgument: Game
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1635182140}
-        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+      - m_Target: {fileID: 275268599}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
         m_MethodName: PlayUIClick
         m_Mode: 1
         m_Arguments:
@@ -478,6 +483,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275268594}
   m_CullTransparentMesh: 1
+--- !u!114 &275268599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275268594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &305224685
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,6 +645,7 @@ GameObject:
   - component: {fileID: 446406190}
   - component: {fileID: 446406189}
   - component: {fileID: 446406188}
+  - component: {fileID: 446406192}
   m_Layer: 5
   m_Name: QuitGameButton
   m_TagString: Untagged
@@ -724,8 +742,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1635182140}
-        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+      - m_Target: {fileID: 446406192}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
         m_MethodName: PlayUIClick
         m_Mode: 1
         m_Arguments:
@@ -774,6 +792,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446406186}
   m_CullTransparentMesh: 1
+--- !u!114 &446406192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446406186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &479858802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1516,17 +1546,6 @@ Transform:
   m_Father: {fileID: 238081456}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1635182140 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 457005696796426337, guid: 1cbec2d8ffcaed344978038463ed81c9, type: 3}
-  m_PrefabInstance: {fileID: 457005697186293930}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abbe1ca1d85d2a44ba13d6bbd9195189, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1845147798
 GameObject:
   m_ObjectHideFlags: 0

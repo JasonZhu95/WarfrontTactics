@@ -274,6 +274,7 @@ public class EnemyData : CharacterData
 
             if (Vector2.Distance(transform.position, path[0].transform.position) < 0.0001f)
             {
+                SoundManager.instance.Play("Footstep");
                 PositionOnTile(path[0]);
                 path.RemoveAt(0);
             }

@@ -63,6 +63,11 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    /* ------------------------------------------------------------------------
+    * Coroutine: InvokeOnEnemyTurnChanged
+    * Description: When its the enemies turn, bring up the turn canvas and set
+    * the anim.  The 2 second wait is a workaround to an Animation Event
+    * ---------------------------------------------------------------------- */
     private IEnumerator InvokeOnEnemyTurnChanged(int turn)
     {
         turnCanvasAnim.SetBool("enemy", true);
@@ -70,6 +75,12 @@ public class TurnManager : MonoBehaviour
         turnCanvasAnim.SetBool("enemy", false);
         OnEnemyTurnChanged?.Invoke(turn);
     }
+
+    /* ------------------------------------------------------------------------
+    * Coroutine: InvokeOnPlayerTurnChanged
+    * Description: When its the player turn, bring up the turn canvas and set
+    * the anim.  The 2 second wait is a workaround to an Animation Event
+    * ---------------------------------------------------------------------- */
 
     private IEnumerator InvokeOnPlayerTurnChanged(int turn)
     {

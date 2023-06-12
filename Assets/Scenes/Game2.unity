@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 34798081}
   - component: {fileID: 34798080}
   - component: {fileID: 34798083}
+  - component: {fileID: 34798084}
   m_Layer: 5
   m_Name: QuitGameButton
   m_TagString: Untagged
@@ -220,8 +221,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 457005696796426337, guid: 1cbec2d8ffcaed344978038463ed81c9, type: 3}
-        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+      - m_Target: {fileID: 34798084}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
         m_MethodName: PlayUIClick
         m_Mode: 1
         m_Arguments:
@@ -280,6 +281,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95cb5e92aed3274d89d18c4fc6b8c9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &34798084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34798078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &41868943
@@ -1488,6 +1501,7 @@ GameObject:
   - component: {fileID: 515007030}
   - component: {fileID: 515007029}
   - component: {fileID: 515007028}
+  - component: {fileID: 515007031}
   m_Layer: 5
   m_Name: ContinueButton
   m_TagString: Untagged
@@ -1572,6 +1586,18 @@ MonoBehaviour:
           m_StringArgument: Game2
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 515007031}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
+        m_MethodName: PlayUIClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &515007029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1610,6 +1636,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 515007026}
   m_CullTransparentMesh: 1
+--- !u!114 &515007031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515007026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1842,6 +1880,7 @@ GameObject:
   - component: {fileID: 612333681}
   - component: {fileID: 612333680}
   - component: {fileID: 612333679}
+  - component: {fileID: 612333682}
   m_Layer: 5
   m_Name: MainMenuButton
   m_TagString: Untagged
@@ -1926,8 +1965,8 @@ MonoBehaviour:
           m_StringArgument: MainMenu
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 457005696796426337, guid: 1cbec2d8ffcaed344978038463ed81c9, type: 3}
-        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+      - m_Target: {fileID: 612333682}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
         m_MethodName: PlayUIClick
         m_Mode: 1
         m_Arguments:
@@ -1976,6 +2015,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 612333677}
   m_CullTransparentMesh: 1
+--- !u!114 &612333682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612333677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &617884510
 GameObject:
   m_ObjectHideFlags: 0
@@ -6743,6 +6794,7 @@ GameObject:
   - component: {fileID: 1642139412}
   - component: {fileID: 1642139411}
   - component: {fileID: 1642139410}
+  - component: {fileID: 1642139413}
   m_Layer: 5
   m_Name: ContinueButton
   m_TagString: Untagged
@@ -6827,6 +6879,18 @@ MonoBehaviour:
           m_StringArgument: Game2
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1642139413}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
+        m_MethodName: PlayUIClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1642139411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6865,6 +6929,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1642139408}
   m_CullTransparentMesh: 1
+--- !u!114 &1642139413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1642139408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1766618063
 GameObject:
   m_ObjectHideFlags: 0
@@ -7716,6 +7792,7 @@ GameObject:
   - component: {fileID: 1897111478}
   - component: {fileID: 1897111477}
   - component: {fileID: 1897111476}
+  - component: {fileID: 1897111479}
   m_Layer: 5
   m_Name: EndTurnButton
   m_TagString: Untagged
@@ -7800,6 +7877,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1897111479}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
+        m_MethodName: PlayUIClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1897111477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7838,6 +7927,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1897111474}
   m_CullTransparentMesh: 1
+--- !u!114 &1897111479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897111474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1975501694
 GameObject:
   m_ObjectHideFlags: 0
@@ -7950,6 +8051,7 @@ GameObject:
   - component: {fileID: 1987317796}
   - component: {fileID: 1987317795}
   - component: {fileID: 1987317798}
+  - component: {fileID: 1987317799}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -8045,8 +8147,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1986254462}
-        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+      - m_Target: {fileID: 1987317799}
+        m_TargetAssemblyTypeName: PlayUIClickSound, Assembly-CSharp
         m_MethodName: PlayUIClick
         m_Mode: 1
         m_Arguments:
@@ -8105,6 +8207,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6aa72baf8415c974b80eb4ca2c372706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1987317799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987317793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29570a9835316854b8efca86b1ed5cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2007705908
@@ -8327,6 +8441,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2061518950, guid: 6d6b780c6f375c04dbcfb63b036538fc, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
     - target: {fileID: 5846438177820187719, guid: 6d6b780c6f375c04dbcfb63b036538fc, type: 3}
       propertyPath: m_RootOrder
       value: 12
