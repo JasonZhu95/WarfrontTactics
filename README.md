@@ -15,10 +15,6 @@ Control your small group of soldiers and take them to the Warfront!
 
 # Acknowledgements
 
-Grid-Based Movement - LawlessGames
-
-Cryo's Mini GUI - PaperHatLizard
-
 [Isometric Asset Pack - Gustavo Vituri](https://gvituri.itch.io/isometric-trpg)
 
 [Gui Buttons - Fantasy Tower Defense Game Kit](https://free-game-assets.itch.io/fantasy-tower-defense-game-kit)
